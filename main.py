@@ -11,24 +11,6 @@ if not cap.isOpened():
     print("Error: Could not open camera.")
     exit()
 
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        print("Failed to grab frame")
-        break
-
-    # Run YOLO detection on the frame
-    results = model(frame)
-
-    # The results can be displayed directly
-    annotated_frame = results[0].plot()  # Annotate frame with boxes
-
-    # Show the annotated frame
-    cv2.imshow("YOLO Face & Fingers Detection", annotated_frame)
-
-    # Break the loop if 'q' is pressed
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
 
 # Release the camera and close windows
 cap.release()
