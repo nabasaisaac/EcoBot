@@ -12,6 +12,8 @@ if not cap.isOpened():
     exit()
 
 # Create a fullscreen window
+cv2.namedWindow("YOLO Face & Fingers Detection", cv2.WINDOW_NORMAL)
+cv2.setWindowProperty("YOLO Face & Fingers Detection", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
 while True:
     ret, frame = cap.read()
