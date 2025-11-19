@@ -5,7 +5,7 @@ import cv2
 model = YOLO("yolo11n.pt")
 
 # Open the webcam (0 is usually the default camera)
-cap = cv2.VideoCapture(0)
+
 
 if not cap.isOpened():
     print("Error: Could not open camera.")
