@@ -35,5 +35,5 @@ while True:
         break
 
 # Release the camera and close windows
-cap.release()
+
 cv2.destroyAllWindows()
