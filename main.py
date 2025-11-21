@@ -16,7 +16,7 @@ cv2.namedWindow("YOLO Face & Fingers Detection", cv2.WINDOW_NORMAL)
 cv2.setWindowProperty("YOLO Face & Fingers Detection", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
 while True:
-    ret, frame = cap.read()
+    # ret, frame = cap.read()
     if not ret:
         print("Failed to grab frame")
         break
