@@ -48,7 +48,9 @@ export const AboutRobotPage = () => {
                 </div>
                 <div className="flex gap-2">
                   <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-surface dark:bg-white/10 text-on-surface-secondary dark:text-white/70 hover:bg-slate-200 dark:hover:bg-white/20 transition-colors gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
-                    <span className="material-symbols-outlined">notifications</span>
+                    <span className="material-symbols-outlined">
+                      notifications
+                    </span>
                   </button>
                   <button className="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-surface dark:bg-white/10 text-on-surface-secondary dark:text-white/70 hover:bg-slate-200 dark:hover:bg-white/20 transition-colors gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5">
                     <span className="material-symbols-outlined">settings</span>
