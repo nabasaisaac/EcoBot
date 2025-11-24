@@ -15,15 +15,55 @@ import {
   Bot,
 } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+// Try Node.js API first, fallback to Flask directly
+const NODE_API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const FLASK_API_URL = "http://localhost:5000";
+
+// Function to determine which API to use
+const getApiUrl = async () => {
+  try {
+    // Try Node.js API first
+    const response = await fetch(`${NODE_API_URL}/api/health`, {
+      method: "GET",
+      signal: AbortSignal.timeout(2000), // 2 second timeout
+    });
+    if (response.ok) {
+      return NODE_API_URL;
+    }
+  } catch (err) {
+    console.log("Node.js API not available, trying Flask directly");
+  }
+  
+  // Fallback to Flask
+  try {
+    const response = await fetch(`${FLASK_API_URL}/api/health`, {
+      method: "GET",
+      signal: AbortSignal.timeout(2000),
+    });
+    if (response.ok) {
+      return FLASK_API_URL;
+    }
+  } catch (err) {
+    console.log("Flask API not available");
+  }
+  
+  // Default to Node.js (will show error if not available)
+  return NODE_API_URL;
+};
 
 export const ManualControlPage = () => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [apiUrl, setApiUrl] = useState(NODE_API_URL);
   const videoRef = useRef(null);
 
   useEffect(() => {
+    // Detect which API is available
+    getApiUrl().then((url) => {
+      setApiUrl(url);
+    });
+    
     // Cleanup on unmount
     return () => {
       stopCamera();
@@ -36,22 +76,30 @@ export const ManualControlPage = () => {
     setError(null);
 
     try {
+      // Try to detect API if not set
+      const currentApiUrl = apiUrl || await getApiUrl();
+      setApiUrl(currentApiUrl);
+
       // Start camera on backend
-      const response = await fetch(`${API_URL}/api/camera/start`, {
+      const response = await fetch(`${currentApiUrl}/api/camera/start`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
 
-      if (response.ok && data.status === "success") {
+      if (data.status === "success" || data.status === "already_streaming") {
         setIsStreaming(true);
 
         // Set video source to stream endpoint
         if (videoRef.current) {
-          videoRef.current.src = `${API_URL}/api/camera/stream?t=${Date.now()}`;
+          videoRef.current.src = `${currentApiUrl}/api/camera/stream?t=${Date.now()}`;
         }
       } else {
         setError(data.message || "Failed to start camera");
@@ -60,7 +108,7 @@ export const ManualControlPage = () => {
     } catch (err) {
       console.error("Error starting camera:", err);
       setError(
-        "Failed to connect to camera. Make sure the backend is running."
+        `Failed to connect to camera. Make sure Flask API is running on port 5000. Error: ${err.message}`
       );
       setIsStreaming(false);
     } finally {
@@ -70,7 +118,8 @@ export const ManualControlPage = () => {
 
   const stopCamera = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/camera/stop`, {
+      const currentApiUrl = apiUrl || FLASK_API_URL;
+      const response = await fetch(`${currentApiUrl}/api/camera/stop`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
