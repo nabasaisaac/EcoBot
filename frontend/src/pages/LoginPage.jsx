@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ThemeToggle } from '../components/ThemeToggle';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ThemeToggle } from "../components/ThemeToggle";
 
 export const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // TODO: Add authentication logic
-    navigate('/admin-dashboard');
+    navigate("/admin-dashboard");
   };
 
   return (
@@ -21,32 +21,39 @@ export const LoginPage = () => {
       </div>
       <main className="flex flex-1">
         <div className="flex flex-1 flex-col justify-center items-center p-4 md:p-8">
-          <div className="flex flex-col w-full max-w-md items-center gap-6">
+          <div className="flex flex-col w-full max-w-sm items-center gap-6">
             {/* Logo */}
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-4xl text-primary">recycling</span>
-              <span className="text-3xl font-bold text-slate-800 dark:text-white">EcoBot</span>
+              <span className="material-symbols-outlined text-4xl text-primary">
+                recycling
+              </span>
+              <span className="text-3xl font-bold text-on-surface dark:text-white">
+                EcoBot
+              </span>
             </div>
 
             {/* Headline */}
             <div className="w-full text-center">
-              <h1 className="text-slate-900 dark:text-white tracking-tight text-[32px] font-bold leading-tight pb-3 pt-6">
+              <h1 className="text-on-surface dark:text-white tracking-tight text-[32px] font-bold leading-tight pb-2 pt-6">
                 Sign in to your account
               </h1>
-              <p className="text-slate-600 dark:text-[#9ac1af] text-base font-normal leading-normal">
+              <p className="text-on-surface-secondary dark:text-white/80 text-base font-normal leading-normal">
                 Welcome back, please enter your details.
               </p>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="flex w-full flex-col items-stretch gap-4 pt-6">
+            <form
+              onSubmit={handleSubmit}
+              className="flex w-full flex-col items-stretch gap-4 pt-6"
+            >
               {/* Email Field */}
               <label className="flex flex-col flex-1">
-                <p className="text-slate-800 dark:text-white text-base font-medium leading-normal pb-2">
+                <p className="text-on-surface dark:text-white text-base font-medium leading-normal pb-2">
                   Email Address
                 </p>
                 <input
-                  className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-300 dark:border-[#3a5f4e] bg-background-light dark:bg-[#1d2f27] focus:border-primary h-14 placeholder:text-slate-400 dark:placeholder:text-[#9ac1af] p-[15px] text-base font-normal leading-normal"
+                  className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-on-surface dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-white/20 bg-white dark:bg-background-dark h-12 placeholder:text-gray-500 dark:placeholder:text-white/50 p-[15px] text-base font-normal leading-normal"
                   placeholder="Enter your email"
                   type="email"
                   value={email}
@@ -57,14 +64,14 @@ export const LoginPage = () => {
 
               {/* Password Field */}
               <label className="flex flex-col flex-1">
-                <p className="text-slate-800 dark:text-white text-base font-medium leading-normal pb-2">
+                <p className="text-on-surface dark:text-white text-base font-medium leading-normal pb-2">
                   Password
                 </p>
                 <div className="relative flex w-full flex-1 items-stretch">
                   <input
-                    className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-l-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-300 dark:border-[#3a5f4e] bg-background-light dark:bg-[#1d2f27] focus:border-primary h-14 placeholder:text-slate-400 dark:placeholder:text-[#9ac1af] p-[15px] border-r-0 pr-2 text-base font-normal leading-normal"
+                    className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-on-surface dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-gray-300 dark:border-white/20 bg-white dark:bg-background-dark h-12 placeholder:text-gray-500 dark:placeholder:text-white/50 p-[15px] pr-12 text-base font-normal leading-normal"
                     placeholder="Enter your password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -73,10 +80,10 @@ export const LoginPage = () => {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label="Toggle password visibility"
-                    className="text-slate-400 dark:text-[#9ac1af] flex border border-slate-300 dark:border-[#3a5f4e] bg-background-light dark:bg-[#1d2f27] items-center justify-center px-[15px] rounded-r-lg border-l-0 hover:bg-slate-100 dark:hover:bg-primary/20 focus:outline-0 focus:ring-2 focus:ring-primary/50"
+                    className="text-gray-500 dark:text-white/50 absolute inset-y-0 right-0 flex items-center justify-center px-4 rounded-r-lg hover:bg-gray-100 dark:hover:bg-white/10 focus:outline-0 focus:ring-2 focus:ring-primary/50"
                   >
                     <span className="material-symbols-outlined text-2xl">
-                      {showPassword ? 'visibility' : 'visibility_off'}
+                      {showPassword ? "visibility" : "visibility_off"}
                     </span>
                   </button>
                 </div>
@@ -84,7 +91,10 @@ export const LoginPage = () => {
 
               {/* Forgot Password Link */}
               <div className="w-full text-right">
-                <a className="text-primary hover:underline text-sm font-normal leading-normal" href="#">
+                <a
+                  className="text-primary hover:underline text-sm font-medium leading-normal"
+                  href="#"
+                >
                   Forgot your password?
                 </a>
               </div>
@@ -93,7 +103,7 @@ export const LoginPage = () => {
               <div className="w-full pt-4">
                 <button
                   type="submit"
-                  className="flex h-14 w-full items-center justify-center rounded-lg bg-primary text-white text-base font-bold leading-normal transition-colors hover:bg-primary/90"
+                  className="flex h-12 w-full items-center justify-center rounded-lg bg-primary text-white text-base font-bold leading-normal transition-colors hover:bg-primary/90"
                 >
                   Log In
                 </button>
@@ -102,7 +112,7 @@ export const LoginPage = () => {
 
             {/* Footer */}
             <div className="pt-8 text-center">
-              <p className="text-slate-500 dark:text-slate-400 text-xs font-normal">
+              <p className="text-gray-500 dark:text-white/50 text-xs font-normal">
                 © 2024 EcoBot. All rights reserved.
               </p>
             </div>
@@ -112,4 +122,3 @@ export const LoginPage = () => {
     </div>
   );
 };
-

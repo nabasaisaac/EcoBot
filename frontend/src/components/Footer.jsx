@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   return (
@@ -6,20 +6,31 @@ export const Footer = () => {
       <div className="max-w-[1280px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
         <div className="flex items-center gap-3">
           <div className="size-5 text-primary">
-            <span className="material-symbols-outlined text-3xl">recycling</span>
+            <span className="material-symbols-outlined text-3xl">
+              recycling
+            </span>
           </div>
-          <p className="text-slate-600 dark:text-white/70 text-sm">
+          <p className="text-text-secondary dark:text-white/70 text-sm">
             © 2024 Autonomous Waste Collector. All Rights Reserved.
           </p>
         </div>
         <div className="flex items-center gap-6">
-          <Link to="/about" className="text-slate-600 dark:text-white/70 hover:text-slate-800 dark:hover:text-white transition-colors">
+          <Link
+            to="/about"
+            className="text-text-secondary dark:text-white/70 hover:text-text-primary dark:hover:text-white transition-colors"
+          >
             About
           </Link>
-          <a href="#" className="text-slate-600 dark:text-white/70 hover:text-slate-800 dark:hover:text-white transition-colors">
+          <a
+            href="#"
+            className="text-text-secondary dark:text-white/70 hover:text-text-primary dark:hover:text-white transition-colors"
+          >
             Research
           </a>
-          <a href="#" className="text-slate-600 dark:text-white/70 hover:text-slate-800 dark:hover:text-white transition-colors">
+          <a
+            href="#"
+            className="text-text-secondary dark:text-white/70 hover:text-text-primary dark:hover:text-white transition-colors"
+          >
             Contact
           </a>
         </div>
@@ -27,4 +38,3 @@ export const Footer = () => {
     </footer>
   );
 };
-
