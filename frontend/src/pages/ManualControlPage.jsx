@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Sidebar } from "../components/Sidebar";
 import {
   Play,
@@ -21,34 +21,38 @@ const FLASK_API_URL = "http://localhost:5000";
 
 // Function to determine which API to use
 const getApiUrl = async () => {
+  // Helper function to fetch with timeout
+  const fetchWithTimeout = (url, timeout = 2000) => {
+    return Promise.race([
+      fetch(url, { method: "GET" }),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Timeout")), timeout)
+      ),
+    ]);
+  };
+
   try {
     // Try Node.js API first
-    const response = await fetch(`${NODE_API_URL}/api/health`, {
-      method: "GET",
-      signal: AbortSignal.timeout(2000), // 2 second timeout
-    });
+    const response = await fetchWithTimeout(`${NODE_API_URL}/api/health`);
     if (response.ok) {
       return NODE_API_URL;
     }
-  } catch (err) {
+  } catch {
     console.log("Node.js API not available, trying Flask directly");
   }
-  
+
   // Fallback to Flask
   try {
-    const response = await fetch(`${FLASK_API_URL}/api/health`, {
-      method: "GET",
-      signal: AbortSignal.timeout(2000),
-    });
+    const response = await fetchWithTimeout(`${FLASK_API_URL}/api/health`);
     if (response.ok) {
       return FLASK_API_URL;
     }
-  } catch (err) {
+  } catch {
     console.log("Flask API not available");
   }
-  
-  // Default to Node.js (will show error if not available)
-  return NODE_API_URL;
+
+  // Default to Flask since it's running
+  return FLASK_API_URL;
 };
 
 export const ManualControlPage = () => {
@@ -56,14 +60,15 @@ export const ManualControlPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [apiUrl, setApiUrl] = useState(NODE_API_URL);
-  const videoRef = useRef(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [streamUrl, setStreamUrl] = useState(null);
 
   useEffect(() => {
     // Detect which API is available
     getApiUrl().then((url) => {
       setApiUrl(url);
     });
-    
+
     // Cleanup on unmount
     return () => {
       stopCamera();
@@ -77,7 +82,7 @@ export const ManualControlPage = () => {
 
     try {
       // Try to detect API if not set
-      const currentApiUrl = apiUrl || await getApiUrl();
+      const currentApiUrl = apiUrl || (await getApiUrl());
       setApiUrl(currentApiUrl);
 
       // Start camera on backend
@@ -95,12 +100,13 @@ export const ManualControlPage = () => {
       const data = await response.json();
 
       if (data.status === "success" || data.status === "already_streaming") {
-        setIsStreaming(true);
-
-        // Set video source to stream endpoint
-        if (videoRef.current) {
-          videoRef.current.src = `${currentApiUrl}/api/camera/stream?t=${Date.now()}`;
-        }
+        // Wait a bit for camera to be ready, then set stream URL
+        setTimeout(() => {
+          const url = `${currentApiUrl}/api/camera/stream?t=${Date.now()}`;
+          console.log("Setting stream URL to:", url);
+          setStreamUrl(url);
+          setIsStreaming(true);
+        }, 1000); // Increased delay to ensure camera is ready
       } else {
         setError(data.message || "Failed to start camera");
         setIsStreaming(false);
@@ -128,9 +134,7 @@ export const ManualControlPage = () => {
 
       if (response.ok) {
         setIsStreaming(false);
-        if (videoRef.current) {
-          videoRef.current.src = "";
-        }
+        setStreamUrl(null);
       }
     } catch (err) {
       console.error("Error stopping camera:", err);
@@ -154,8 +158,12 @@ export const ManualControlPage = () => {
       className="relative flex w-full min-h-screen"
       style={{ backgroundColor: "#f0f2f5", fontFamily: "Inter, sans-serif" }}
     >
-      <Sidebar variant="manual-control" />
-      <main className="flex-1 p-8">
+      <Sidebar
+        variant="manual-control"
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
+      />
+      <main className="flex-1 p-4 mt-16 lg:p-8 lg:mt-0">
         <div className="flex flex-col gap-8">
           <header className="flex flex-wrap justify-between gap-3">
             <div className="flex flex-col gap-1">
@@ -190,14 +198,22 @@ export const ManualControlPage = () => {
                 </p>
               </div>
               <div className="relative flex items-center justify-center overflow-hidden bg-gray-900 aspect-video rounded-xl">
-                {isStreaming ? (
-                  <video
-                    ref={videoRef}
-                    autoPlay
-                    playsInline
-                    muted
+                {isStreaming && streamUrl ? (
+                  <img
+                    src={streamUrl}
+                    alt="Live camera feed"
                     className="object-cover w-full h-full"
                     style={{ backgroundColor: "#000000" }}
+                    onError={(e) => {
+                      console.error("Image stream error:", e);
+                      setError(
+                        "Failed to load video stream. Check if camera is accessible."
+                      );
+                    }}
+                    onLoad={() => {
+                      console.log("Stream image loaded");
+                      setError(null);
+                    }}
                   />
                 ) : (
                   <div className="flex flex-col items-center justify-center w-full h-full">

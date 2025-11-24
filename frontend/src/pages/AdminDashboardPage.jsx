@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { Header } from "../components/Header";
 import {
@@ -17,12 +18,14 @@ import {
 import { Link } from "react-router-dom";
 
 export const AdminDashboardPage = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="flex h-screen" style={{ fontFamily: "Inter, sans-serif" }}>
-      <Sidebar variant="admin-dashboard" />
+      <Sidebar variant="admin-dashboard" isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
       <div className="flex flex-1 flex-col overflow-y-auto">
         <Header variant="admin" />
-        <main className="flex-1 p-6 lg:p-10 grid grid-cols-12 gap-6" style={{ backgroundColor: "#f8fafc" }}>
+        <main className="flex-1 p-4 lg:p-6 xl:p-10 grid grid-cols-12 gap-4 lg:gap-6 mt-16 lg:mt-0" style={{ backgroundColor: "#f8fafc" }}>
           <div className="col-span-12 lg:col-span-8 flex flex-col gap-6">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="flex flex-col gap-2 rounded-lg p-4 border" style={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0" }}>

@@ -65,8 +65,12 @@ def generate_frames():
     """Generate video frames with YOLO detection"""
     global camera, is_streaming, current_frame, frame_lock
     
+    frame_count = 0
+    print("Starting frame generation...")
+    
     while is_streaming:
         if camera is None:
+            print("Camera is None, breaking loop")
             break
             
         ret, frame = camera.read()
@@ -95,6 +99,10 @@ def generate_frames():
                 continue
             
             frame_bytes = buffer.tobytes()
+            frame_count += 1
+            
+            if frame_count % 30 == 0:  # Log every 30 frames
+                print(f"Streaming frame {frame_count}")
             
             # Yield frame in MJPEG format
             yield (b'--frame\r\n'
@@ -104,6 +112,8 @@ def generate_frames():
             continue
         
         time.sleep(0.033)  # ~30 FPS
+    
+    print("Frame generation stopped")
 
 @app.route('/api/camera/start', methods=['POST'])
 def start_camera():
@@ -111,14 +121,30 @@ def start_camera():
     global camera, is_streaming, model
     
     if is_streaming:
+        print("Camera already streaming")
         return jsonify({'status': 'already_streaming', 'message': 'Camera is already streaming'}), 200
     
     if camera is None:
+        print("Initializing camera...")
         if not init_camera():
+            print("Failed to initialize camera")
             return jsonify({'status': 'error', 'message': 'Failed to initialize camera'}), 500
+        print("Camera initialized successfully")
     
-    is_streaming = True
-    return jsonify({'status': 'success', 'message': 'Camera started'}), 200
+    # Test if camera can read a frame
+    if camera is not None and camera.isOpened():
+        ret, test_frame = camera.read()
+        if not ret:
+            print("Camera opened but cannot read frames")
+            return jsonify({'status': 'error', 'message': 'Camera cannot read frames'}), 500
+        print(f"Camera test frame read successfully: {test_frame.shape if ret else 'failed'}")
+        
+        is_streaming = True
+        print("Camera streaming started - ready to serve frames")
+        return jsonify({'status': 'success', 'message': 'Camera started'}), 200
+    else:
+        print("Camera not available")
+        return jsonify({'status': 'error', 'message': 'Camera opened but not available'}), 500
 
 @app.route('/api/camera/stop', methods=['POST'])
 def stop_camera():
@@ -146,16 +172,30 @@ def camera_status():
 @app.route('/api/camera/stream')
 def video_stream():
     """Video streaming route"""
-    global is_streaming
+    global is_streaming, camera
+    
+    print(f"Stream request received. is_streaming: {is_streaming}, camera: {camera is not None}")
     
     if not is_streaming:
+        print("Stream requested but camera not started")
         return Response("Camera not started. Please start camera first.", status=400, mimetype='text/plain')
     
+    if camera is None or not camera.isOpened():
+        print("Camera not available for streaming")
+        return Response("Camera not available.", status=500, mimetype='text/plain')
+    
+    print("Starting video stream response...")
     return Response(generate_frames(),
                     mimetype='multipart/x-mixed-replace; boundary=frame',
                     headers={
-                        'Cache-Control': 'no-cache',
-                        'X-Accel-Buffering': 'no'
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0',
+                        'X-Accel-Buffering': 'no',
+                        'Connection': 'keep-alive',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'GET',
+                        'Access-Control-Allow-Headers': 'Content-Type'
                     })
 
 @app.route('/api/health', methods=['GET'])
