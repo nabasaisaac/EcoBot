@@ -27,6 +27,11 @@ export default {
         critical: "#c53030",
         error: "#ef4444",
         info: "#3b82f6",
+        "neutral-900": "#0f172a",
+        "neutral-800": "#1e293b",
+        "neutral-600": "#475569",
+        "neutral-500": "#64748b",
+        "neutral-300": "#cbd5e1",
       },
       fontFamily: {
         display: ["Space Grotesk", "sans-serif"],
