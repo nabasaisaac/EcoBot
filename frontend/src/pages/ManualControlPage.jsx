@@ -41,15 +41,15 @@ const getApiUrl = async () => {
     console.log("Node.js API not available, trying Flask directly");
   }
 
-  // Fallback to Flask
-  try {
-    const response = await fetchWithTimeout(`${FLASK_API_URL}/api/health`);
-    if (response.ok) {
-      return FLASK_API_URL;
-    }
-  } catch {
-    console.log("Flask API not available");
-  }
+  // // Fallback to Flask
+  // try {
+  //   const response = await fetchWithTimeout(`${FLASK_API_URL}/api/health`);
+  //   if (response.ok) {
+  //     return FLASK_API_URL;
+  //   }
+  // } catch {
+  //   console.log("Flask API not available");
+  // }
 
   // Default to Flask since it's running
   return FLASK_API_URL;
