@@ -1,31 +1,74 @@
-import { Sidebar } from '../components/Sidebar';
+import { Sidebar } from "../components/Sidebar";
+import {
+  ChevronDown,
+  Bell,
+  LogOut,
+  Recycle,
+  CheckCircle,
+  AlertTriangle,
+  Zap,
+} from "lucide-react";
 
 export const LiveMonitoringPage = () => {
   return (
-    <div className="flex h-screen">
+    <div
+      className="flex h-screen"
+      style={{ fontFamily: "Space Grotesk, sans-serif" }}
+    >
       <Sidebar />
-      <main className="flex-1 overflow-y-auto p-8">
+      <main
+        className="flex-1 overflow-y-auto p-8"
+        style={{ backgroundColor: "#f7fafc" }}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
-            <p className="text-text-primary text-4xl font-black leading-tight tracking-[-0.033em]">
+            <p
+              className="text-4xl font-black leading-tight tracking-[-0.033em]"
+              style={{ color: "#1a202c" }}
+            >
               Live Monitoring Dashboard
             </p>
             <div className="flex items-center gap-4">
-              <button className="flex h-10 items-center justify-center gap-x-2 rounded-lg bg-card border border-border-color px-4">
-                <p className="text-text-primary text-sm font-medium leading-normal">Robot: All</p>
-                <span className="material-symbols-outlined text-text-secondary text-xl">expand_more</span>
+              <button
+                className="flex h-10 items-center justify-center gap-x-2 rounded-lg border px-4"
+                style={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0" }}
+              >
+                <p
+                  className="text-sm font-medium leading-normal"
+                  style={{ color: "#1a202c" }}
+                >
+                  Robot: All
+                </p>
+                <ChevronDown size={20} style={{ color: "#4a5568" }} />
               </button>
-              <button className="flex items-center justify-center size-10 rounded-lg bg-card border border-border-color text-text-secondary">
-                <span className="material-symbols-outlined">notifications</span>
+              <button
+                className="flex items-center justify-center size-10 rounded-lg border"
+                style={{
+                  backgroundColor: "#ffffff",
+                  borderColor: "#e2e8f0",
+                  color: "#4a5568",
+                }}
+              >
+                <Bell size={20} />
               </button>
-              <button className="flex items-center justify-center size-10 rounded-lg bg-card border border-border-color text-text-secondary">
-                <span className="material-symbols-outlined">logout</span>
+              <button
+                className="flex items-center justify-center size-10 rounded-lg border"
+                style={{
+                  backgroundColor: "#ffffff",
+                  borderColor: "#e2e8f0",
+                  color: "#4a5568",
+                }}
+              >
+                <LogOut size={20} />
               </button>
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 flex flex-col gap-6">
-              <div className="bg-card p-4 rounded-xl border border-border-color">
+              <div
+                className="p-4 rounded-xl border"
+                style={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0" }}
+              >
                 <div
                   className="relative flex items-end justify-start bg-cover bg-center aspect-video rounded-lg p-4"
                   style={{
@@ -37,7 +80,9 @@ export const LiveMonitoringPage = () => {
                   <div className="relative flex justify-between items-center w-full">
                     <div>
                       <h3 className="text-white font-bold text-lg">ROB-001</h3>
-                      <p className="text-sm text-green-300">Status: Collecting</p>
+                      <p className="text-sm" style={{ color: "#86efac" }}>
+                        Status: Collecting
+                      </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="size-3 rounded-full bg-red-500 animate-pulse"></div>
@@ -46,22 +91,37 @@ export const LiveMonitoringPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="bg-card p-6 rounded-xl border border-border-color">
-                <h3 className="text-text-primary font-bold text-xl mb-4">Robot Vitals</h3>
+              <div
+                className="p-6 rounded-xl border"
+                style={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0" }}
+              >
+                <h3
+                  className="font-bold text-xl mb-4"
+                  style={{ color: "#1a202c" }}
+                >
+                  Robot Vitals
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   <div className="flex flex-col items-center gap-2">
                     <div className="relative size-24">
-                      <svg className="size-full" height="36" viewBox="0 0 36 36" width="36" xmlns="http://www.w3.org/2000/svg">
+                      <svg
+                        className="size-full"
+                        height="36"
+                        viewBox="0 0 36 36"
+                        width="36"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
                         <circle
-                          className="stroke-current text-gray-200"
+                          className="stroke-current"
                           cx="18"
                           cy="18"
                           fill="none"
                           r="16"
                           strokeWidth="3"
+                          style={{ color: "#e5e7eb" }}
                         ></circle>
                         <circle
-                          className="stroke-current text-success"
+                          className="stroke-current"
                           cx="18"
                           cy="18"
                           fill="none"
@@ -70,31 +130,44 @@ export const LiveMonitoringPage = () => {
                           strokeDashoffset="100"
                           strokeWidth="3"
                           style={{
-                            strokeDashoffset: 'calc(100 - (100 * 88) / 100)',
-                            transform: 'rotate(-90deg)',
-                            transformOrigin: '50% 50%',
+                            strokeDashoffset: "calc(100 - (100 * 88) / 100)",
+                            transform: "rotate(-90deg)",
+                            transformOrigin: "50% 50%",
+                            color: "#38a169",
                           }}
                         ></circle>
                       </svg>
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-text-primary font-bold text-lg">
+                      <div
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-lg"
+                        style={{ color: "#1a202c" }}
+                      >
                         88%
                       </div>
                     </div>
-                    <p className="text-sm text-text-secondary">Battery Level</p>
+                    <p className="text-sm" style={{ color: "#4a5568" }}>
+                      Battery Level
+                    </p>
                   </div>
                   <div className="flex flex-col items-center gap-2">
                     <div className="relative size-24">
-                      <svg className="size-full" height="36" viewBox="0 0 36 36" width="36" xmlns="http://www.w3.org/2000/svg">
+                      <svg
+                        className="size-full"
+                        height="36"
+                        viewBox="0 0 36 36"
+                        width="36"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
                         <circle
-                          className="stroke-current text-gray-200"
+                          className="stroke-current"
                           cx="18"
                           cy="18"
                           fill="none"
                           r="16"
                           strokeWidth="3"
+                          style={{ color: "#e5e7eb" }}
                         ></circle>
                         <circle
-                          className="stroke-current text-warning"
+                          className="stroke-current"
                           cx="18"
                           cy="18"
                           fill="none"
@@ -103,31 +176,44 @@ export const LiveMonitoringPage = () => {
                           strokeDashoffset="100"
                           strokeWidth="3"
                           style={{
-                            strokeDashoffset: 'calc(100 - (100 * 65) / 100)',
-                            transform: 'rotate(-90deg)',
-                            transformOrigin: '50% 50%',
+                            strokeDashoffset: "calc(100 - (100 * 65) / 100)",
+                            transform: "rotate(-90deg)",
+                            transformOrigin: "50% 50%",
+                            color: "#dd6b20",
                           }}
                         ></circle>
                       </svg>
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-text-primary font-bold text-lg">
+                      <div
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-lg"
+                        style={{ color: "#1a202c" }}
+                      >
                         65%
                       </div>
                     </div>
-                    <p className="text-sm text-text-secondary">Bin Capacity</p>
+                    <p className="text-sm" style={{ color: "#4a5568" }}>
+                      Bin Capacity
+                    </p>
                   </div>
                   <div className="flex flex-col items-center gap-2">
                     <div className="relative size-24">
-                      <svg className="size-full" height="36" viewBox="0 0 36 36" width="36" xmlns="http://www.w3.org/2000/svg">
+                      <svg
+                        className="size-full"
+                        height="36"
+                        viewBox="0 0 36 36"
+                        width="36"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
                         <circle
-                          className="stroke-current text-gray-200"
+                          className="stroke-current"
                           cx="18"
                           cy="18"
                           fill="none"
                           r="16"
                           strokeWidth="3"
+                          style={{ color: "#e5e7eb" }}
                         ></circle>
                         <circle
-                          className="stroke-current text-success"
+                          className="stroke-current"
                           cx="18"
                           cy="18"
                           fill="none"
@@ -136,31 +222,44 @@ export const LiveMonitoringPage = () => {
                           strokeDashoffset="100"
                           strokeWidth="3"
                           style={{
-                            strokeDashoffset: 'calc(100 - (100 * 92) / 100)',
-                            transform: 'rotate(-90deg)',
-                            transformOrigin: '50% 50%',
+                            strokeDashoffset: "calc(100 - (100 * 92) / 100)",
+                            transform: "rotate(-90deg)",
+                            transformOrigin: "50% 50%",
+                            color: "#38a169",
                           }}
                         ></circle>
                       </svg>
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-text-primary font-bold text-lg">
+                      <div
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-lg"
+                        style={{ color: "#1a202c" }}
+                      >
                         92%
                       </div>
                     </div>
-                    <p className="text-sm text-text-secondary">Connectivity</p>
+                    <p className="text-sm" style={{ color: "#4a5568" }}>
+                      Connectivity
+                    </p>
                   </div>
                   <div className="flex flex-col items-center gap-2">
                     <div className="relative size-24">
-                      <svg className="size-full" height="36" viewBox="0 0 36 36" width="36" xmlns="http://www.w3.org/2000/svg">
+                      <svg
+                        className="size-full"
+                        height="36"
+                        viewBox="0 0 36 36"
+                        width="36"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
                         <circle
-                          className="stroke-current text-gray-200"
+                          className="stroke-current"
                           cx="18"
                           cy="18"
                           fill="none"
                           r="16"
                           strokeWidth="3"
+                          style={{ color: "#e5e7eb" }}
                         ></circle>
                         <circle
-                          className="stroke-current text-success"
+                          className="stroke-current"
                           cx="18"
                           cy="18"
                           fill="none"
@@ -169,22 +268,36 @@ export const LiveMonitoringPage = () => {
                           strokeDashoffset="100"
                           strokeWidth="3"
                           style={{
-                            strokeDashoffset: 'calc(100 - (100 * 45) / 100)',
-                            transform: 'rotate(-90deg)',
-                            transformOrigin: '50% 50%',
+                            strokeDashoffset: "calc(100 - (100 * 45) / 100)",
+                            transform: "rotate(-90deg)",
+                            transformOrigin: "50% 50%",
+                            color: "#38a169",
                           }}
                         ></circle>
                       </svg>
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-text-primary font-bold text-lg">
+                      <div
+                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-bold text-lg"
+                        style={{ color: "#1a202c" }}
+                      >
                         45°C
                       </div>
                     </div>
-                    <p className="text-sm text-text-secondary">Motor Temp</p>
+                    <p className="text-sm" style={{ color: "#4a5568" }}>
+                      Motor Temp
+                    </p>
                   </div>
                 </div>
               </div>
-              <div className="bg-card p-4 rounded-xl border border-border-color">
-                <h3 className="text-text-primary font-bold text-xl mb-4 px-2">Live Fleet Location</h3>
+              <div
+                className="p-4 rounded-xl border"
+                style={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0" }}
+              >
+                <h3
+                  className="font-bold text-xl mb-4 px-2"
+                  style={{ color: "#1a202c" }}
+                >
+                  Live Fleet Location
+                </h3>
                 <div
                   className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg object-cover"
                   style={{
@@ -195,76 +308,160 @@ export const LiveMonitoringPage = () => {
               </div>
             </div>
             <div className="lg:col-span-1 flex flex-col gap-6">
-              <div className="bg-card p-6 rounded-xl border border-border-color">
+              <div
+                className="p-6 rounded-xl border"
+                style={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0" }}
+              >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-text-primary font-bold text-xl">Urgent Alerts</h3>
-                  <div className="flex items-center justify-center size-7 rounded-full bg-critical text-white text-sm font-bold">
+                  <h3
+                    className="font-bold text-xl"
+                    style={{ color: "#1a202c" }}
+                  >
+                    Urgent Alerts
+                  </h3>
+                  <div
+                    className="flex items-center justify-center size-7 rounded-full text-white text-sm font-bold"
+                    style={{ backgroundColor: "#c53030" }}
+                  >
                     2
                   </div>
                 </div>
                 <div className="flex flex-col gap-3">
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                    <p className="font-medium text-red-800">Robot 04: Bin Full</p>
-                    <p className="text-sm text-red-600">Requires immediate emptying.</p>
+                  <div
+                    className="border rounded-lg p-3"
+                    style={{
+                      backgroundColor: "#fef2f2",
+                      borderColor: "#fecaca",
+                    }}
+                  >
+                    <p className="font-medium" style={{ color: "#991b1b" }}>
+                      Robot 04: Bin Full
+                    </p>
+                    <p className="text-sm" style={{ color: "#dc2626" }}>
+                      Requires immediate emptying.
+                    </p>
                   </div>
-                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
-                    <p className="font-medium text-orange-800">Robot 02: Path Blocked</p>
-                    <p className="text-sm text-orange-600">Obstacle detected. Rerouting.</p>
+                  <div
+                    className="border rounded-lg p-3"
+                    style={{
+                      backgroundColor: "#fff7ed",
+                      borderColor: "#fed7aa",
+                    }}
+                  >
+                    <p className="font-medium" style={{ color: "#9a3412" }}>
+                      Robot 02: Path Blocked
+                    </p>
+                    <p className="text-sm" style={{ color: "#ea580c" }}>
+                      Obstacle detected. Rerouting.
+                    </p>
                   </div>
                 </div>
               </div>
-              <div className="bg-card p-6 rounded-xl border border-border-color">
-                <h3 className="text-text-primary font-bold text-xl mb-4">Recent Events</h3>
+              <div
+                className="p-6 rounded-xl border"
+                style={{ backgroundColor: "#ffffff", borderColor: "#e2e8f0" }}
+              >
+                <h3
+                  className="font-bold text-xl mb-4"
+                  style={{ color: "#1a202c" }}
+                >
+                  Recent Events
+                </h3>
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center size-10 rounded-lg bg-gray-100 text-success">
-                      <span className="material-symbols-outlined">recycling</span>
+                    <div
+                      className="flex items-center justify-center size-10 rounded-lg"
+                      style={{ backgroundColor: "#f3f4f6", color: "#38a169" }}
+                    >
+                      <Recycle size={20} />
                     </div>
                     <div className="flex-1">
-                      <p className="text-text-primary font-medium">Waste Detected</p>
-                      <p className="text-sm text-text-secondary">ROB-001 at Sector 4</p>
+                      <p className="font-medium" style={{ color: "#1a202c" }}>
+                        Waste Detected
+                      </p>
+                      <p className="text-sm" style={{ color: "#4a5568" }}>
+                        ROB-001 at Sector 4
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-400">2m ago</p>
+                    <p className="text-sm" style={{ color: "#9ca3af" }}>
+                      2m ago
+                    </p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center size-10 rounded-lg bg-gray-100 text-success">
-                      <span className="material-symbols-outlined">check_circle</span>
+                    <div
+                      className="flex items-center justify-center size-10 rounded-lg"
+                      style={{ backgroundColor: "#f3f4f6", color: "#38a169" }}
+                    >
+                      <CheckCircle size={20} />
                     </div>
                     <div className="flex-1">
-                      <p className="text-text-primary font-medium">Bin Emptied</p>
-                      <p className="text-sm text-text-secondary">ROB-004 at Dock 2</p>
+                      <p className="font-medium" style={{ color: "#1a202c" }}>
+                        Bin Emptied
+                      </p>
+                      <p className="text-sm" style={{ color: "#4a5568" }}>
+                        ROB-004 at Dock 2
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-400">15m ago</p>
+                    <p className="text-sm" style={{ color: "#9ca3af" }}>
+                      15m ago
+                    </p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center size-10 rounded-lg bg-gray-100 text-warning">
-                      <span className="material-symbols-outlined">warning</span>
+                    <div
+                      className="flex items-center justify-center size-10 rounded-lg"
+                      style={{ backgroundColor: "#f3f4f6", color: "#dd6b20" }}
+                    >
+                      <AlertTriangle size={20} />
                     </div>
                     <div className="flex-1">
-                      <p className="text-text-primary font-medium">Obstacle Avoided</p>
-                      <p className="text-sm text-text-secondary">ROB-002 near Fountain</p>
+                      <p className="font-medium" style={{ color: "#1a202c" }}>
+                        Obstacle Avoided
+                      </p>
+                      <p className="text-sm" style={{ color: "#4a5568" }}>
+                        ROB-002 near Fountain
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-400">22m ago</p>
+                    <p className="text-sm" style={{ color: "#9ca3af" }}>
+                      22m ago
+                    </p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center size-10 rounded-lg bg-gray-100 text-success">
-                      <span className="material-symbols-outlined">recycling</span>
+                    <div
+                      className="flex items-center justify-center size-10 rounded-lg"
+                      style={{ backgroundColor: "#f3f4f6", color: "#38a169" }}
+                    >
+                      <Recycle size={20} />
                     </div>
                     <div className="flex-1">
-                      <p className="text-text-primary font-medium">Waste Detected</p>
-                      <p className="text-sm text-text-secondary">ROB-003 at Main Path</p>
+                      <p className="font-medium" style={{ color: "#1a202c" }}>
+                        Waste Detected
+                      </p>
+                      <p className="text-sm" style={{ color: "#4a5568" }}>
+                        ROB-003 at Main Path
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-400">28m ago</p>
+                    <p className="text-sm" style={{ color: "#9ca3af" }}>
+                      28m ago
+                    </p>
                   </div>
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center size-10 rounded-lg bg-gray-100 text-blue-500">
-                      <span className="material-symbols-outlined">power</span>
+                    <div
+                      className="flex items-center justify-center size-10 rounded-lg"
+                      style={{ backgroundColor: "#f3f4f6", color: "#3b82f6" }}
+                    >
+                      <Zap size={20} />
                     </div>
                     <div className="flex-1">
-                      <p className="text-text-primary font-medium">Charging Started</p>
-                      <p className="text-sm text-text-secondary">ROB-001 at Dock 1</p>
+                      <p className="font-medium" style={{ color: "#1a202c" }}>
+                        Charging Started
+                      </p>
+                      <p className="text-sm" style={{ color: "#4a5568" }}>
+                        ROB-001 at Dock 1
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-400">45m ago</p>
+                    <p className="text-sm" style={{ color: "#9ca3af" }}>
+                      45m ago
+                    </p>
                   </div>
                 </div>
               </div>
@@ -275,4 +472,3 @@ export const LiveMonitoringPage = () => {
     </div>
   );
 };
-
