@@ -1,11 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
+import { LayoutDashboard, Gamepad2, Calendar, Wrench, Settings, LogOut, Activity, Bot, History, Recycle, BarChart3 } from 'lucide-react';
 
 export const Sidebar = ({ variant = 'default' }) => {
   const location = useLocation();
 
   if (variant === 'manual-control') {
     return (
-      <aside className="flex w-64 flex-col bg-white p-4 border-r border-border-color">
+      <aside className="flex w-64 flex-col bg-white p-4 border-r" style={{ borderColor: '#e5e7eb' }}>
         <div className="flex flex-col gap-4">
           <div className="flex gap-3 items-center">
             <div
@@ -16,9 +17,9 @@ export const Sidebar = ({ variant = 'default' }) => {
               }}
             ></div>
             <div className="flex flex-col">
-              <h1 className="text-dark-text text-base font-semibold leading-normal">ARC-007</h1>
-              <p className="text-primary text-sm font-medium leading-normal flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-primary"></span>
+              <h1 className="text-base font-semibold leading-normal" style={{ color: '#111827', fontFamily: 'Inter, sans-serif' }}>ARC-007</h1>
+              <p className="text-sm font-medium leading-normal flex items-center gap-1.5" style={{ color: '#17563a' }}>
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#17563a' }}></span>
                 Online
               </p>
             </div>
@@ -26,37 +27,39 @@ export const Sidebar = ({ variant = 'default' }) => {
           <nav className="flex flex-col gap-1 mt-4">
             <Link
               to="/admin-dashboard"
-              className="flex items-center gap-3 px-3 py-2 text-gray-text hover:text-dark-text hover:bg-light-gray rounded-md"
+              className="flex items-center gap-3 px-3 py-2 rounded-md transition-colors hover:bg-gray-100"
+              style={{ color: '#6b7280' }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#111827'; e.currentTarget.style.backgroundColor = '#f0f2f5'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = '#6b7280'; e.currentTarget.style.backgroundColor = 'transparent'; }}
             >
-              <span className="material-symbols-outlined text-xl">dashboard</span>
+              <LayoutDashboard size={20} />
               <p className="text-sm font-medium leading-normal">Dashboard</p>
             </Link>
             <Link
               to="/manual-control"
-              className="flex items-center gap-3 px-3 py-2 rounded-md bg-primary-light text-primary"
+              className="flex items-center gap-3 px-3 py-2 rounded-md"
+              style={{ backgroundColor: '#e8f5ee', color: '#17563a' }}
             >
-              <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
-                gamepad
-              </span>
+              <Gamepad2 size={20} fill="#17563a" />
               <p className="text-sm font-medium leading-normal">Manual Control</p>
             </Link>
-            <a href="#" className="flex items-center gap-3 px-3 py-2 text-gray-text hover:text-dark-text hover:bg-light-gray rounded-md">
-              <span className="material-symbols-outlined text-xl">calendar_today</span>
+            <a href="#" className="flex items-center gap-3 px-3 py-2 rounded-md transition-colors hover:bg-gray-100" style={{ color: '#6b7280' }} onMouseEnter={(e) => { e.currentTarget.style.color = '#111827'; e.currentTarget.style.backgroundColor = '#f0f2f5'; }} onMouseLeave={(e) => { e.currentTarget.style.color = '#6b7280'; e.currentTarget.style.backgroundColor = 'transparent'; }}>
+              <Calendar size={20} />
               <p className="text-sm font-medium leading-normal">Robot Schedule</p>
             </a>
-            <a href="#" className="flex items-center gap-3 px-3 py-2 text-gray-text hover:text-dark-text hover:bg-light-gray rounded-md">
-              <span className="material-symbols-outlined text-xl">build</span>
+            <a href="#" className="flex items-center gap-3 px-3 py-2 rounded-md transition-colors hover:bg-gray-100" style={{ color: '#6b7280' }} onMouseEnter={(e) => { e.currentTarget.style.color = '#111827'; e.currentTarget.style.backgroundColor = '#f0f2f5'; }} onMouseLeave={(e) => { e.currentTarget.style.color = '#6b7280'; e.currentTarget.style.backgroundColor = 'transparent'; }}>
+              <Wrench size={20} />
               <p className="text-sm font-medium leading-normal">Maintenance Logs</p>
             </a>
           </nav>
         </div>
         <div className="mt-auto flex flex-col gap-1">
-          <a href="#" className="flex items-center gap-3 px-3 py-2 text-gray-text hover:text-dark-text hover:bg-light-gray rounded-md">
-            <span className="material-symbols-outlined text-xl">settings</span>
+          <a href="#" className="flex items-center gap-3 px-3 py-2 rounded-md transition-colors hover:bg-gray-100" style={{ color: '#6b7280' }} onMouseEnter={(e) => { e.currentTarget.style.color = '#111827'; e.currentTarget.style.backgroundColor = '#f0f2f5'; }} onMouseLeave={(e) => { e.currentTarget.style.color = '#6b7280'; e.currentTarget.style.backgroundColor = 'transparent'; }}>
+            <Settings size={20} />
             <p className="text-sm font-medium leading-normal">Settings</p>
           </a>
-          <a href="#" className="flex items-center gap-3 px-3 py-2 text-gray-text hover:text-dark-text hover:bg-light-gray rounded-md">
-            <span className="material-symbols-outlined text-xl">logout</span>
+          <a href="#" className="flex items-center gap-3 px-3 py-2 rounded-md transition-colors hover:bg-gray-100" style={{ color: '#6b7280' }} onMouseEnter={(e) => { e.currentTarget.style.color = '#111827'; e.currentTarget.style.backgroundColor = '#f0f2f5'; }} onMouseLeave={(e) => { e.currentTarget.style.color = '#6b7280'; e.currentTarget.style.backgroundColor = 'transparent'; }}>
+            <LogOut size={20} />
             <p className="text-sm font-medium leading-normal">Logout</p>
           </a>
         </div>
@@ -66,55 +69,45 @@ export const Sidebar = ({ variant = 'default' }) => {
 
   if (variant === 'admin-dashboard') {
     return (
-      <aside className="flex w-64 flex-col bg-container border-r border-border-color">
+      <aside className="flex w-64 flex-col border-r" style={{ backgroundColor: '#ffffff', borderColor: '#e2e8f0' }}>
         <div className="flex h-full flex-col justify-between p-4">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3 p-2">
-              <div className="flex items-center justify-center size-10 rounded-lg bg-primary text-white">
-                <span className="material-symbols-outlined text-2xl">recycling</span>
+              <div className="flex items-center justify-center size-10 rounded-lg text-white" style={{ backgroundColor: '#17563a' }}>
+                <Recycle size={20} />
               </div>
               <div className="flex flex-col">
-                <h1 className="text-text-primary text-base font-bold leading-normal">FleetAdmin</h1>
-                <p className="text-text-secondary text-sm font-normal leading-normal">IoT Fleet Manager</p>
+                <h1 className="text-base font-bold leading-normal" style={{ color: '#1e293b', fontFamily: 'Inter, sans-serif' }}>FleetAdmin</h1>
+                <p className="text-sm font-normal leading-normal" style={{ color: '#64748b' }}>IoT Fleet Manager</p>
               </div>
             </div>
             <nav className="flex flex-col gap-2 mt-4 px-2">
               <Link
                 to="/admin-dashboard"
-                className={`flex items-center gap-3 px-3 py-2 rounded-md ${
-                  location.pathname === '/admin-dashboard'
-                    ? 'bg-primary/10 text-primary font-semibold'
-                    : 'hover:bg-gray-100 text-text-secondary hover:text-text-primary'
-                }`}
+                className={`flex items-center gap-3 px-3 py-2 rounded-md ${location.pathname === '/admin-dashboard' ? 'font-semibold' : 'font-medium'}`}
+                style={location.pathname === '/admin-dashboard' ? { backgroundColor: 'rgba(23, 86, 58, 0.1)', color: '#17563a' } : { color: '#64748b' }}
+                onMouseEnter={(e) => { if (location.pathname !== '/admin-dashboard') { e.currentTarget.style.backgroundColor = '#f3f4f6'; e.currentTarget.style.color = '#1e293b'; } }}
+                onMouseLeave={(e) => { if (location.pathname !== '/admin-dashboard') { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#64748b'; } }}
               >
-                <span className="material-symbols-outlined">dashboard</span>
+                <LayoutDashboard size={20} />
                 <p className="text-sm leading-normal">Dashboard</p>
               </Link>
-              <a
-                href="#"
-                className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-text-secondary hover:text-text-primary"
-              >
-                <span className="material-symbols-outlined">smart_toy</span>
-                <p className="text-sm font-medium leading-normal">Robots</p>
+              <a href="#" className="flex items-center gap-3 px-3 py-2 rounded-md transition-colors font-medium" style={{ color: '#64748b' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#f3f4f6'; e.currentTarget.style.color = '#1e293b'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#64748b'; }}>
+                <Bot size={20} />
+                <p className="text-sm leading-normal">Robots</p>
               </a>
-              <a
-                href="#"
-                className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-text-secondary hover:text-text-primary"
-              >
-                <span className="material-symbols-outlined">bar_chart</span>
-                <p className="text-sm font-medium leading-normal">Analytics</p>
+              <a href="#" className="flex items-center gap-3 px-3 py-2 rounded-md transition-colors font-medium" style={{ color: '#64748b' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#f3f4f6'; e.currentTarget.style.color = '#1e293b'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#64748b'; }}>
+                <BarChart3 size={20} />
+                <p className="text-sm leading-normal">Analytics</p>
               </a>
-              <a
-                href="#"
-                className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-text-secondary hover:text-text-primary"
-              >
-                <span className="material-symbols-outlined">settings</span>
-                <p className="text-sm font-medium leading-normal">Settings</p>
+              <a href="#" className="flex items-center gap-3 px-3 py-2 rounded-md transition-colors font-medium" style={{ color: '#64748b' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#f3f4f6'; e.currentTarget.style.color = '#1e293b'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#64748b'; }}>
+                <Settings size={20} />
+                <p className="text-sm leading-normal">Settings</p>
               </a>
             </nav>
           </div>
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3 p-2 border-t border-border-color pt-4">
+            <div className="flex items-center gap-3 p-2 border-t pt-4" style={{ borderColor: '#e2e8f0' }}>
               <div
                 className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
                 style={{
@@ -123,8 +116,8 @@ export const Sidebar = ({ variant = 'default' }) => {
                 }}
               ></div>
               <div className="flex flex-col">
-                <h1 className="text-text-primary text-sm font-medium leading-normal">Admin User</h1>
-                <p className="text-text-secondary text-xs font-normal leading-normal hover:text-primary cursor-pointer">
+                <h1 className="text-sm font-medium leading-normal" style={{ color: '#1e293b' }}>Admin User</h1>
+                <p className="text-xs font-normal leading-normal cursor-pointer transition-colors hover:opacity-80" style={{ color: '#64748b' }} onMouseEnter={(e) => e.target.style.color = '#17563a'} onMouseLeave={(e) => e.target.style.color = '#64748b'}>
                   Logout
                 </p>
               </div>
@@ -136,11 +129,13 @@ export const Sidebar = ({ variant = 'default' }) => {
   }
 
   return (
-    <aside className="w-64 bg-card flex-shrink-0 p-4 border-r border-border-color">
+    <aside className="w-64 flex-shrink-0 p-4 border-r" style={{ backgroundColor: '#ffffff', borderColor: '#e2e8f0' }}>
       <div className="flex flex-col h-full">
         <div className="flex items-center gap-3 mb-8">
-          <span className="material-symbols-outlined text-primary text-3xl">smart_toy</span>
-          <h2 className="text-text-primary text-xl font-bold">RoboClean</h2>
+          <span className="text-3xl" style={{ color: '#17563a' }}>
+            <Bot size={32} />
+          </span>
+          <h2 className="text-xl font-bold" style={{ color: '#1a202c', fontFamily: 'Space Grotesk, sans-serif' }}>RoboClean</h2>
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex gap-3 items-center mb-6">
@@ -152,61 +147,43 @@ export const Sidebar = ({ variant = 'default' }) => {
               }}
             ></div>
             <div className="flex flex-col">
-              <h1 className="text-text-primary text-base font-medium leading-normal">Admin User</h1>
-              <p className="text-text-secondary text-sm font-normal leading-normal">admin@robotics.co</p>
+              <h1 className="text-base font-medium leading-normal" style={{ color: '#1a202c' }}>Admin User</h1>
+              <p className="text-sm font-normal leading-normal" style={{ color: '#4a5568' }}>admin@robotics.co</p>
             </div>
           </div>
           <div className="flex flex-col gap-2">
             <Link
               to="/live-monitoring"
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg ${
-                location.pathname === '/live-monitoring'
-                  ? 'bg-primary text-white'
-                  : 'hover:bg-primary/10 transition-colors'
-              }`}
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg ${location.pathname === '/live-monitoring' ? 'text-white' : ''}`}
+              style={location.pathname === '/live-monitoring' ? { backgroundColor: '#17563a' } : { color: '#1a202c' }}
+              onMouseEnter={(e) => { if (location.pathname !== '/live-monitoring') { e.currentTarget.style.backgroundColor = 'rgba(23, 86, 58, 0.1)'; } }}
+              onMouseLeave={(e) => { if (location.pathname !== '/live-monitoring') { e.currentTarget.style.backgroundColor = 'transparent'; } }}
             >
-              <span
-                className={`material-symbols-outlined ${location.pathname === '/live-monitoring' ? 'text-white' : 'text-text-secondary'}`}
-                style={location.pathname === '/live-monitoring' ? { fontVariationSettings: "'FILL' 1, 'wght' 400" } : {}}
-              >
-                monitoring
-              </span>
-              <p className={`text-sm font-medium leading-normal ${location.pathname === '/live-monitoring' ? 'text-white' : 'text-text-primary'}`}>
-                Dashboard
-              </p>
+              <Activity size={20} fill={location.pathname === '/live-monitoring' ? '#ffffff' : 'none'} color={location.pathname === '/live-monitoring' ? '#ffffff' : '#4a5568'} />
+              <p className="text-sm font-medium leading-normal">Dashboard</p>
             </Link>
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors"
-            >
-              <span className="material-symbols-outlined text-text-secondary">smart_toy</span>
-              <p className="text-text-primary text-sm font-medium leading-normal">Robots</p>
+            <a href="#" className="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" style={{ color: '#1a202c' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(23, 86, 58, 0.1)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+              <Bot size={20} color="#4a5568" />
+              <p className="text-sm font-medium leading-normal">Robots</p>
             </a>
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors"
-            >
-              <span className="material-symbols-outlined text-text-secondary">history</span>
-              <p className="text-text-primary text-sm font-medium leading-normal">History</p>
+            <a href="#" className="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" style={{ color: '#1a202c' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(23, 86, 58, 0.1)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+              <History size={20} color="#4a5568" />
+              <p className="text-sm font-medium leading-normal">History</p>
             </a>
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors"
-            >
-              <span className="material-symbols-outlined text-text-secondary">settings</span>
-              <p className="text-text-primary text-sm font-medium leading-normal">Settings</p>
+            <a href="#" className="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors" style={{ color: '#1a202c' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(23, 86, 58, 0.1)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}>
+              <Settings size={20} color="#4a5568" />
+              <p className="text-sm font-medium leading-normal">Settings</p>
             </a>
           </div>
         </div>
-        <div className="mt-auto flex flex-col gap-3 p-4 bg-gray-50 rounded-lg border border-border-color">
+        <div className="mt-auto flex flex-col gap-3 p-4 rounded-lg border" style={{ backgroundColor: '#f9fafb', borderColor: '#e2e8f0' }}>
           <div className="flex justify-between items-center">
-            <h3 className="text-text-primary font-medium">System Status</h3>
-            <div className="size-2 rounded-full bg-success animate-pulse"></div>
+            <h3 className="font-medium" style={{ color: '#1a202c' }}>System Status</h3>
+            <div className="size-2 rounded-full animate-pulse" style={{ backgroundColor: '#38a169' }}></div>
           </div>
-          <p className="text-sm text-green-700">All Systems Operational</p>
+          <p className="text-sm" style={{ color: '#15803d' }}>All Systems Operational</p>
         </div>
       </div>
     </aside>
   );
 };
-
