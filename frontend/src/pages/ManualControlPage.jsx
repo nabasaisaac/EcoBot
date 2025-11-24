@@ -86,12 +86,12 @@ export const ManualControlPage = () => {
       setApiUrl(currentApiUrl);
 
       // Start camera on backend
-      // const response = await fetch(`${currentApiUrl}/api/camera/start`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // });
+      const response = await fetch(`${currentApiUrl}/api/camera/start`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
