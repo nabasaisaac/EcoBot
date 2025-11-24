@@ -52,9 +52,7 @@ export const CircularProgress = ({
           {unit}
         </div>
       </div>
-      <p className="text-sm text-text-secondary dark:text-white/70">
-        {label}
-      </p>
+      <p className="text-sm text-text-secondary dark:text-white/70">{label}</p>
     </div>
   );
 };

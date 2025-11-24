@@ -6,10 +6,10 @@ export const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="flex items-center justify-center size-10 rounded-lg bg-white/10 dark:bg-gray-200 hover:bg-white/20 dark:hover:bg-gray-300 transition-colors border border-white/20 dark:border-gray-300"
+      className="flex items-center justify-center size-10 rounded-lg bg-white dark:bg-white/10 border border-border-color dark:border-white/20 text-text-secondary dark:text-white/70 hover:bg-gray-100 dark:hover:bg-white/20 transition-colors"
       aria-label="Toggle theme"
     >
-      <span className="material-symbols-outlined text-white dark:text-slate-800">
+      <span className="material-symbols-outlined text-lg">
         {isDark ? "light_mode" : "dark_mode"}
       </span>
     </button>
