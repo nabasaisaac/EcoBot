@@ -5,13 +5,15 @@ export const Sidebar = ({ variant = "admin" }) => {
 
   if (variant === "admin") {
     return (
-      <aside className="w-64 bg-[#131f1a] dark:bg-white flex-shrink-0 p-4 border-r border-white/10 dark:border-gray-200 hidden md:flex flex-col">
+      <aside className="w-64 bg-card dark:bg-background-dark flex-shrink-0 p-4 border-r border-border-color dark:border-white/10 hidden md:flex flex-col">
         <div className="flex flex-col h-full">
           <div className="flex items-center gap-3 mb-8">
-            <span className="material-symbols-outlined text-success text-3xl">
+            <span className="material-symbols-outlined text-primary text-3xl">
               smart_toy
             </span>
-            <h2 className="text-white text-xl font-bold">RoboClean</h2>
+            <h2 className="text-text-primary dark:text-white text-xl font-bold">
+              RoboClean
+            </h2>
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex gap-3 items-center mb-6">
@@ -22,10 +24,10 @@ export const Sidebar = ({ variant = "admin" }) => {
                 }}
               />
               <div className="flex flex-col">
-                <h1 className="text-white dark:text-slate-800 text-base font-medium leading-normal">
+                <h1 className="text-text-primary dark:text-white text-base font-medium leading-normal">
                   Admin User
                 </h1>
-                <p className="text-[#9ac1af] dark:text-slate-600 text-sm font-normal leading-normal">
+                <p className="text-text-secondary dark:text-white/70 text-sm font-normal leading-normal">
                   admin@robotics.co
                 </p>
               </div>
@@ -35,8 +37,8 @@ export const Sidebar = ({ variant = "admin" }) => {
                 to="/live-monitoring"
                 className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                   location.pathname === "/live-monitoring"
-                    ? "bg-primary/30 dark:bg-primary/10 text-white dark:text-primary"
-                    : "hover:bg-primary/20 dark:hover:bg-gray-100 text-white dark:text-slate-600"
+                    ? "bg-primary text-white"
+                    : "hover:bg-primary/10 text-text-secondary dark:text-white/70 hover:text-text-primary dark:hover:text-white"
                 }`}
               >
                 <span
@@ -56,22 +58,22 @@ export const Sidebar = ({ variant = "admin" }) => {
                 to="/admin-dashboard"
                 className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                   location.pathname === "/admin-dashboard"
-                    ? "bg-primary/30 dark:bg-primary/10 text-white dark:text-primary"
-                    : "hover:bg-primary/20 dark:hover:bg-gray-100 text-white dark:text-slate-600"
+                    ? "bg-primary text-white"
+                    : "hover:bg-primary/10 text-text-secondary dark:text-white/70 hover:text-text-primary dark:hover:text-white"
                 }`}
               >
                 <span className="material-symbols-outlined">smart_toy</span>
                 <p className="text-sm font-medium leading-normal">Robots</p>
               </Link>
               <a
-                className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20 dark:hover:bg-gray-100 transition-colors text-white dark:text-slate-600"
+                className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors text-text-secondary dark:text-white/70 hover:text-text-primary dark:hover:text-white"
                 href="#"
               >
                 <span className="material-symbols-outlined">history</span>
                 <p className="text-sm font-medium leading-normal">History</p>
               </a>
               <a
-                className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20 dark:hover:bg-gray-100 transition-colors text-white dark:text-slate-600"
+                className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/10 transition-colors text-text-secondary dark:text-white/70 hover:text-text-primary dark:hover:text-white"
                 href="#"
               >
                 <span className="material-symbols-outlined">settings</span>
@@ -79,14 +81,14 @@ export const Sidebar = ({ variant = "admin" }) => {
               </a>
             </div>
           </div>
-          <div className="mt-auto flex flex-col gap-3 p-4 bg-[#294237]/50 dark:bg-gray-100 rounded-lg">
+          <div className="mt-auto flex flex-col gap-3 p-4 bg-gray-50 dark:bg-white/5 rounded-lg border border-border-color dark:border-white/10">
             <div className="flex justify-between items-center">
-              <h3 className="text-white dark:text-slate-800 font-medium">
+              <h3 className="text-text-primary dark:text-white font-medium">
                 System Status
               </h3>
               <div className="size-2 rounded-full bg-success animate-pulse"></div>
             </div>
-            <p className="text-sm text-green-300 dark:text-green-700">
+            <p className="text-sm text-green-700 dark:text-green-400">
               All Systems Operational
             </p>
           </div>

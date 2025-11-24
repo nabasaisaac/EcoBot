@@ -4,46 +4,42 @@ import { ThemeToggle } from "../components/ThemeToggle";
 
 export const LiveMonitoringPage = () => {
   return (
-    <div className="flex h-screen bg-background-light dark:bg-background-dark font-display">
+    <div className="flex h-screen bg-background dark:bg-background-dark font-display text-text-primary">
       <Sidebar variant="admin" />
-      <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 overflow-y-auto p-8">
         <div className="max-w-7xl mx-auto">
           {/* Page Heading */}
-          <div className="flex flex-wrap justify-between items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <p className="text-white dark:text-slate-800 text-2xl sm:text-3xl lg:text-4xl font-black leading-tight tracking-[-0.033em]">
+          <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+            <p className="text-text-primary dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">
               Live Monitoring Dashboard
             </p>
-            <div className="flex items-center gap-2 sm:gap-4">
-              <button className="flex h-9 sm:h-10 items-center justify-center gap-x-2 rounded-lg bg-primary/30 dark:bg-white/10 px-3 sm:px-4">
-                <p className="text-white dark:text-slate-800 text-xs sm:text-sm font-medium leading-normal">
+            <div className="flex items-center gap-4">
+              <button className="flex h-10 items-center justify-center gap-x-2 rounded-lg bg-card dark:bg-white/10 border border-border-color dark:border-white/20 px-4">
+                <p className="text-text-primary dark:text-white text-sm font-medium leading-normal">
                   Robot: All
                 </p>
-                <span className="material-symbols-outlined text-white dark:text-slate-800 text-lg sm:text-xl">
+                <span className="material-symbols-outlined text-text-secondary dark:text-white/70 text-xl">
                   expand_more
                 </span>
               </button>
-              <button className="flex items-center justify-center size-9 sm:size-10 rounded-lg bg-primary/30 dark:bg-white/10 text-white dark:text-slate-800">
-                <span className="material-symbols-outlined text-lg sm:text-xl">
-                  notifications
-                </span>
+              <button className="flex items-center justify-center size-10 rounded-lg bg-card dark:bg-white/10 border border-border-color dark:border-white/20 text-text-secondary dark:text-white/70">
+                <span className="material-symbols-outlined">notifications</span>
               </button>
               <ThemeToggle />
-              <button className="flex items-center justify-center size-9 sm:size-10 rounded-lg bg-primary/30 dark:bg-white/10 text-white dark:text-slate-800">
-                <span className="material-symbols-outlined text-lg sm:text-xl">
-                  logout
-                </span>
+              <button className="flex items-center justify-center size-10 rounded-lg bg-card dark:bg-white/10 border border-border-color dark:border-white/20 text-text-secondary dark:text-white/70">
+                <span className="material-symbols-outlined">logout</span>
               </button>
             </div>
           </div>
 
           {/* Grid Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column */}
-            <div className="lg:col-span-2 flex flex-col gap-4 sm:gap-6">
+            <div className="lg:col-span-2 flex flex-col gap-6">
               {/* Camera Feed */}
-              <div className="bg-[#294237]/50 dark:bg-white p-4 rounded-xl border border-white/10 dark:border-gray-200">
+              <div className="bg-card dark:bg-white/10 p-4 rounded-xl border border-border-color dark:border-white/20">
                 <div
-                  className="relative flex items-end justify-start bg-cover bg-center aspect-video rounded-lg p-3 sm:p-4"
+                  className="relative flex items-end justify-start bg-cover bg-center aspect-video rounded-lg p-4"
                   style={{
                     backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuDazPRjgy9PmHGqrsiIcS9lTKv1fp6Xwz16f-_vPnfi0flhY8y2IetHEZVTwHpoPkMG57_YmA3ryFc1JNljDOvHZfo_mXV0LO5p10qkJDWcMlbi6abntRTocbaYvUhXGW-P5q-nt0gYMce6N3LgOz4BVfmHiu2zlggShF8TJGMPWSzmXKL4BtSFlEiHPTDZSzH_UwtuwdTFXynR1Cu4IM3C-u2xfrqcYjKl7YhCcGapGpPYZhhPQo4UFUHiIPnuc85-_CVVpgs24yY")`,
                   }}
@@ -51,29 +47,25 @@ export const LiveMonitoringPage = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg"></div>
                   <div className="relative flex justify-between items-center w-full">
                     <div>
-                      <h3 className="text-white font-bold text-base sm:text-lg">
-                        ROB-001
-                      </h3>
-                      <p className="text-xs sm:text-sm text-green-300 dark:text-green-600">
+                      <h3 className="text-white font-bold text-lg">ROB-001</h3>
+                      <p className="text-sm text-green-300 dark:text-green-400">
                         Status: Collecting
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="size-2 sm:size-3 rounded-full bg-critical animate-pulse"></div>
-                      <span className="text-white font-medium text-xs sm:text-sm">
-                        REC
-                      </span>
+                      <div className="size-3 rounded-full bg-red-500 animate-pulse"></div>
+                      <span className="text-white font-medium">REC</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Robot Vitals */}
-              <div className="bg-[#294237]/50 dark:bg-white p-4 sm:p-6 rounded-xl border border-white/10 dark:border-gray-200">
-                <h3 className="text-white dark:text-slate-800 font-bold text-lg sm:text-xl mb-3 sm:mb-4">
+              <div className="bg-card dark:bg-white/10 p-6 rounded-xl border border-border-color dark:border-white/20">
+                <h3 className="text-text-primary dark:text-white font-bold text-xl mb-4">
                   Robot Vitals
                 </h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   <CircularProgress
                     value={88}
                     color="success"
@@ -99,8 +91,8 @@ export const LiveMonitoringPage = () => {
               </div>
 
               {/* Map */}
-              <div className="bg-[#294237]/50 dark:bg-white p-4 rounded-xl border border-white/10 dark:border-gray-200">
-                <h3 className="text-white dark:text-slate-800 font-bold text-lg sm:text-xl mb-3 sm:mb-4 px-2">
+              <div className="bg-card dark:bg-white/10 p-4 rounded-xl border border-border-color dark:border-white/20">
+                <h3 className="text-text-primary dark:text-white font-bold text-xl mb-4 px-2">
                   Live Fleet Location
                 </h3>
                 <div
@@ -113,31 +105,31 @@ export const LiveMonitoringPage = () => {
             </div>
 
             {/* Right Column */}
-            <div className="lg:col-span-1 flex flex-col gap-4 sm:gap-6">
+            <div className="lg:col-span-1 flex flex-col gap-6">
               {/* Alerts */}
-              <div className="bg-[#294237]/50 dark:bg-white p-4 sm:p-6 rounded-xl border border-white/10 dark:border-gray-200">
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
-                  <h3 className="text-white dark:text-slate-800 font-bold text-lg sm:text-xl">
+              <div className="bg-card dark:bg-white/10 p-6 rounded-xl border border-border-color dark:border-white/20">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-text-primary dark:text-white font-bold text-xl">
                     Urgent Alerts
                   </h3>
-                  <div className="flex items-center justify-center size-6 sm:size-7 rounded-full bg-critical text-white text-xs sm:text-sm font-bold">
+                  <div className="flex items-center justify-center size-7 rounded-full bg-critical text-white text-sm font-bold">
                     2
                   </div>
                 </div>
-                <div className="flex flex-col gap-2 sm:gap-3">
-                  <div className="bg-critical/20 dark:bg-red-50 border border-critical dark:border-red-200 rounded-lg p-2 sm:p-3">
-                    <p className="font-medium text-red-200 dark:text-red-800 text-sm">
+                <div className="flex flex-col gap-3">
+                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                    <p className="font-medium text-red-800 dark:text-red-300">
                       Robot 04: Bin Full
                     </p>
-                    <p className="text-xs sm:text-sm text-red-300 dark:text-red-600">
+                    <p className="text-sm text-red-600 dark:text-red-400">
                       Requires immediate emptying.
                     </p>
                   </div>
-                  <div className="bg-warning/20 dark:bg-amber-50 border border-warning dark:border-amber-200 rounded-lg p-2 sm:p-3">
-                    <p className="font-medium text-amber-200 dark:text-amber-800 text-sm">
+                  <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-3">
+                    <p className="font-medium text-orange-800 dark:text-orange-300">
                       Robot 02: Path Blocked
                     </p>
-                    <p className="text-xs sm:text-sm text-amber-300 dark:text-amber-600">
+                    <p className="text-sm text-orange-600 dark:text-orange-400">
                       Obstacle detected. Rerouting.
                     </p>
                   </div>
@@ -145,11 +137,11 @@ export const LiveMonitoringPage = () => {
               </div>
 
               {/* Recent Events */}
-              <div className="bg-[#294237]/50 dark:bg-white p-4 sm:p-6 rounded-xl border border-white/10 dark:border-gray-200">
-                <h3 className="text-white dark:text-slate-800 font-bold text-lg sm:text-xl mb-3 sm:mb-4">
+              <div className="bg-card dark:bg-white/10 p-6 rounded-xl border border-border-color dark:border-white/20">
+                <h3 className="text-text-primary dark:text-white font-bold text-xl mb-4">
                   Recent Events
                 </h3>
-                <div className="flex flex-col gap-3 sm:gap-4">
+                <div className="flex flex-col gap-4">
                   {[
                     {
                       icon: "recycling",
@@ -187,23 +179,21 @@ export const LiveMonitoringPage = () => {
                       color: "info",
                     },
                   ].map((event, idx) => (
-                    <div key={idx} className="flex items-center gap-2 sm:gap-4">
-                      <div
-                        className={`flex items-center justify-center size-8 sm:size-10 rounded-lg bg-primary/30 dark:bg-primary/10 text-${event.color} dark:text-primary`}
-                      >
-                        <span className="material-symbols-outlined text-base sm:text-lg">
+                    <div key={idx} className="flex items-center gap-4">
+                      <div className="flex items-center justify-center size-10 rounded-lg bg-gray-100 dark:bg-white/10 text-success dark:text-primary">
+                        <span className="material-symbols-outlined text-lg">
                           {event.icon}
                         </span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-white dark:text-slate-800 font-medium text-sm truncate">
+                      <div className="flex-1">
+                        <p className="text-text-primary dark:text-white font-medium text-sm">
                           {event.title}
                         </p>
-                        <p className="text-xs sm:text-sm text-gray-400 dark:text-slate-600 truncate">
+                        <p className="text-sm text-text-secondary dark:text-white/70">
                           {event.desc}
                         </p>
                       </div>
-                      <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-600 whitespace-nowrap">
+                      <p className="text-sm text-gray-400 dark:text-white/50">
                         {event.time}
                       </p>
                     </div>

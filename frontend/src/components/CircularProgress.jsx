@@ -25,7 +25,7 @@ export const CircularProgress = ({
           xmlns="http://www.w3.org/2000/svg"
         >
           <circle
-            className="stroke-current text-white/10 dark:text-white/10"
+            className="stroke-current text-gray-200 dark:text-white/10"
             cx="18"
             cy="18"
             fill="none"
@@ -47,12 +47,12 @@ export const CircularProgress = ({
             }}
           />
         </svg>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white dark:text-slate-800 font-bold text-base sm:text-lg">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-text-primary dark:text-white font-bold text-lg">
           {value}
           {unit}
         </div>
       </div>
-      <p className="text-xs sm:text-sm text-gray-300 dark:text-slate-600">
+      <p className="text-sm text-text-secondary dark:text-white/70">
         {label}
       </p>
     </div>
