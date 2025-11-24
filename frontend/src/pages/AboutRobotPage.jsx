@@ -23,14 +23,14 @@ export const AboutRobotPage = () => {
 
   return (
     <div
-      className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden"
+      className="relative flex flex-col w-full h-auto min-h-screen overflow-x-hidden"
       style={{
         backgroundColor: "#ffffff",
         fontFamily: "Space Grotesk, sans-serif",
       }}
     >
-      <div className="layout-container flex h-full grow flex-col">
-        <div className="px-4 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
+      <div className="flex flex-col h-full layout-container grow">
+        <div className="flex justify-center flex-1 px-4 py-5 lg:px-20 xl:px-40">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1 gap-10">
             <Header />
             <main>
@@ -43,7 +43,7 @@ export const AboutRobotPage = () => {
                         'linear-gradient(rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBuL6JuGs6kfkIv6dD5VTppETT3b4Fzp7mgkEwKRN-3deBP3r5Ffy8i99SPduvRHC8L8yldURE-x2ZE4nKlVV2B3nY2HvpAbxOmkTA3qsAlMQeHVp29nOLIt2SLZOzS1YNlfi9cMz7dR6btLQ8x200EUcOept4NJNz0ztxmi7PrA04vBzq_yZyYPexgL3NHQmF7oyXZCS_LTGDF-21HbfgV4w0enITuoXdS8LTTMoCV23Q5LOdTjrZkFM41kCjSYLm7QzL9krYLOwM")',
                     }}
                   >
-                    <div className="flex flex-col gap-2 text-center max-w-2xl">
+                    <div className="flex flex-col max-w-2xl gap-2 text-center">
                       <h1
                         className="text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]"
                         style={{ color: "#0f172a" }}
@@ -70,7 +70,7 @@ export const AboutRobotPage = () => {
                 </h2>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 p-4">
                   <div
-                    className="flex flex-1 gap-3 rounded-lg border p-4 flex-col transition-colors hover:border-opacity-50"
+                    className="flex flex-col flex-1 gap-3 p-4 transition-colors border rounded-lg hover:border-opacity-50"
                     style={{
                       borderColor: "#e2e8f0",
                       backgroundColor: "#f8fafc",
@@ -103,7 +103,7 @@ export const AboutRobotPage = () => {
                     </div>
                   </div>
                   <div
-                    className="flex flex-1 gap-3 rounded-lg border p-4 flex-col transition-colors hover:border-opacity-50"
+                    className="flex flex-col flex-1 gap-3 p-4 transition-colors border rounded-lg hover:border-opacity-50"
                     style={{
                       borderColor: "#e2e8f0",
                       backgroundColor: "#f8fafc",
@@ -136,7 +136,7 @@ export const AboutRobotPage = () => {
                     </div>
                   </div>
                   <div
-                    className="flex flex-1 gap-3 rounded-lg border p-4 flex-col transition-colors hover:border-opacity-50"
+                    className="flex flex-col flex-1 gap-3 p-4 transition-colors border rounded-lg hover:border-opacity-50"
                     style={{
                       borderColor: "#e2e8f0",
                       backgroundColor: "#f8fafc",
@@ -169,7 +169,7 @@ export const AboutRobotPage = () => {
                     </div>
                   </div>
                   <div
-                    className="flex flex-1 gap-3 rounded-lg border p-4 flex-col transition-colors hover:border-opacity-50"
+                    className="flex flex-col flex-1 gap-3 p-4 transition-colors border rounded-lg hover:border-opacity-50"
                     style={{
                       borderColor: "#e2e8f0",
                       backgroundColor: "#f8fafc",
@@ -204,7 +204,7 @@ export const AboutRobotPage = () => {
                 </div>
               </section>
               <section className="mt-10">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 p-4">
+                <div className="grid grid-cols-1 gap-10 p-4 lg:grid-cols-2">
                   <div>
                     <h2
                       className="text-[22px] font-bold leading-tight tracking-[-0.015em] pb-3 pt-5"
@@ -214,7 +214,7 @@ export const AboutRobotPage = () => {
                     </h2>
                     <div className="flex flex-col gap-3 mt-4">
                       <details
-                        className="group rounded-lg border p-4"
+                        className="p-4 border rounded-lg group"
                         open
                         style={{
                           borderColor: openDetails.ai ? "#17563a" : "#e2e8f0",
@@ -222,7 +222,7 @@ export const AboutRobotPage = () => {
                         }}
                       >
                         <summary
-                          className="flex cursor-pointer list-none items-center justify-between text-base font-bold"
+                          className="flex items-center justify-between text-base font-bold list-none cursor-pointer"
                           style={{ color: "#0f172a" }}
                           onClick={() => toggleDetail("ai")}
                         >
@@ -250,14 +250,14 @@ export const AboutRobotPage = () => {
                         </p>
                       </details>
                       <details
-                        className="group rounded-lg border p-4"
+                        className="p-4 border rounded-lg group"
                         style={{
                           borderColor: openDetails.iot ? "#17563a" : "#e2e8f0",
                           backgroundColor: "#f8fafc",
                         }}
                       >
                         <summary
-                          className="flex cursor-pointer list-none items-center justify-between text-base font-bold"
+                          className="flex items-center justify-between text-base font-bold list-none cursor-pointer"
                           style={{ color: "#0f172a" }}
                           onClick={() => toggleDetail("iot")}
                         >
@@ -285,7 +285,7 @@ export const AboutRobotPage = () => {
                         </p>
                       </details>
                       <details
-                        className="group rounded-lg border p-4"
+                        className="p-4 border rounded-lg group"
                         style={{
                           borderColor: openDetails.vision
                             ? "#17563a"
@@ -294,7 +294,7 @@ export const AboutRobotPage = () => {
                         }}
                       >
                         <summary
-                          className="flex cursor-pointer list-none items-center justify-between text-base font-bold"
+                          className="flex items-center justify-between text-base font-bold list-none cursor-pointer"
                           style={{ color: "#0f172a" }}
                           onClick={() => toggleDetail("vision")}
                         >
@@ -322,7 +322,7 @@ export const AboutRobotPage = () => {
                         </p>
                       </details>
                       <details
-                        className="group rounded-lg border p-4"
+                        className="p-4 border rounded-lg group"
                         style={{
                           borderColor: openDetails.sensor
                             ? "#17563a"
@@ -331,7 +331,7 @@ export const AboutRobotPage = () => {
                         }}
                       >
                         <summary
-                          className="flex cursor-pointer list-none items-center justify-between text-base font-bold"
+                          className="flex items-center justify-between text-base font-bold list-none cursor-pointer"
                           style={{ color: "#0f172a" }}
                           onClick={() => toggleDetail("sensor")}
                         >
@@ -375,7 +375,7 @@ export const AboutRobotPage = () => {
                       }}
                     >
                       <img
-                        className="max-h-full max-w-full object-contain"
+                        className="object-contain max-w-full max-h-full"
                         alt="Diagram of the EcoBot with labels pointing to hardware components"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0EvMg_NArTitlh0MuWCMN7zrT6dfUzMOmw3epoLlIMchDgUCY-2aRoX1Q_HPogNaybuNwm35mwM_wCn4ZMtHKpo0qH4UCrCKDrH9T4gZnR8IBJRfxor5OUIlT7cAfOGAbn6QqklrO_06zGLYNx15Jrcek4Hy6XXLfH94s3_nAshxek8pgXVxAI-shhJLB8EPfVcbMq8IU3_qaQ06RcbebErT3sUxyArazvZKLZ6NxbZKS01tVP6A5_B7NUKZgDZjXgs8fW0KvyP0"
                       />
@@ -383,12 +383,12 @@ export const AboutRobotPage = () => {
                   </div>
                 </div>
               </section>
-              <section className="mt-10 p-4">
+              <section className="p-4 mt-10">
                 <div
-                  className="rounded-lg border p-6 lg:p-10"
+                  className="p-6 border rounded-lg lg:p-10"
                   style={{ borderColor: "#e2e8f0", backgroundColor: "#f8fafc" }}
                 >
-                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                  <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
                     <div className="lg:col-span-3">
                       <h2
                         className="text-[22px] font-bold leading-tight tracking-[-0.015em]"
@@ -396,7 +396,7 @@ export const AboutRobotPage = () => {
                       >
                         Our Mission & Environmental Impact
                       </h2>
-                      <p className="text-sm mt-4" style={{ color: "#64748b" }}>
+                      <p className="mt-4 text-sm" style={{ color: "#64748b" }}>
                         Our mission is to revolutionize urban sanitation by
                         deploying intelligent, autonomous robots that create
                         cleaner, greener, and more sustainable public spaces. We
@@ -406,9 +406,9 @@ export const AboutRobotPage = () => {
                         everywhere.
                       </p>
                     </div>
-                    <div className="lg:col-span-2 flex flex-col gap-4">
+                    <div className="flex flex-col gap-4 lg:col-span-2">
                       <div
-                        className="flex items-center gap-4 rounded-lg p-4"
+                        className="flex items-center gap-4 p-4 rounded-lg"
                         style={{ backgroundColor: "rgba(23, 86, 58, 0.1)" }}
                       >
                         <span
@@ -426,7 +426,7 @@ export const AboutRobotPage = () => {
                         </p>
                       </div>
                       <div
-                        className="flex items-center gap-4 rounded-lg p-4"
+                        className="flex items-center gap-4 p-4 rounded-lg"
                         style={{ backgroundColor: "rgba(23, 86, 58, 0.1)" }}
                       >
                         <span
