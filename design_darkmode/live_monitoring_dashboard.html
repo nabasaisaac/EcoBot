@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Autonomous Rubbish-Collection Robot - Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#165539",
+              "background-light": "#f6f8f7",
+              "background-dark": "#131f1a",
+              "success": "#00C853",
+              "warning": "#FFAB00",
+              "critical": "#D50000"
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "0.75rem",
+              "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-300">
+<div class="flex h-screen">
+<!-- SideNavBar -->
+<aside class="w-64 bg-[#131f1a] flex-shrink-0 p-4 border-r border-white/10">
+<div class="flex flex-col h-full">
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-success text-3xl">smart_toy</span>
+<h2 class="text-white text-xl font-bold">RoboClean</h2>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex gap-3 items-center mb-6">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Admin user avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA2xWe1S3QubHu_BgC5hQlm4sS_b8hiEusd094csWw1Y8VjWp2jA5RAqp6tYNK4Q0YSb1I6dWdPFKC8xuSusf04CR2tXTBbrjU1W-GhKBdbo9WiE01IdmDpRtKHtwB9FMhrfuGMmYcoMpVs6cRDoCX5U2ycAb9bQcPjNQJHEZlNH23btL9Mq5Fmego8himV5A7BlYaLadRHPJKPZwC6Yvow2j5G--CbnhjRHW1IOAsgajwp1hVTmuzpTwK8piGwTw_46eB0arznroY");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-medium leading-normal">Admin User</h1>
+<p class="text-[#9ac1af] text-sm font-normal leading-normal">admin@robotics.co</p>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/30" href="#">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1, 'wght' 400;">monitoring</span>
+<p class="text-white text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20 transition-colors" href="#">
+<span class="material-symbols-outlined text-white">smart_toy</span>
+<p class="text-white text-sm font-medium leading-normal">Robots</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20 transition-colors" href="#">
+<span class="material-symbols-outlined text-white">history</span>
+<p class="text-white text-sm font-medium leading-normal">History</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20 transition-colors" href="#">
+<span class="material-symbols-outlined text-white">settings</span>
+<p class="text-white text-sm font-medium leading-normal">Settings</p>
+</a>
+</div>
+</div>
+<div class="mt-auto flex flex-col gap-3 p-4 bg-[#294237]/50 rounded-lg">
+<div class="flex justify-between items-center">
+<h3 class="text-white font-medium">System Status</h3>
+<div class="size-2 rounded-full bg-success animate-pulse"></div>
+</div>
+<p class="text-sm text-green-300">All Systems Operational</p>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto p-8">
+<div class="max-w-7xl mx-auto">
+<!-- PageHeading -->
+<div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+<p class="text-white text-4xl font-black leading-tight tracking-[-0.033em]">Live Monitoring Dashboard</p>
+<div class="flex items-center gap-4">
+<button class="flex h-10 items-center justify-center gap-x-2 rounded-lg bg-primary/30 px-4">
+<p class="text-white text-sm font-medium leading-normal">Robot: All</p>
+<span class="material-symbols-outlined text-white text-xl">expand_more</span>
+</button>
+<button class="flex items-center justify-center size-10 rounded-lg bg-primary/30 text-white">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center justify-center size-10 rounded-lg bg-primary/30 text-white">
+<span class="material-symbols-outlined">logout</span>
+</button>
+</div>
+</div>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Left Column -->
+<div class="lg:col-span-2 flex flex-col gap-6">
+<!-- Camera Feed -->
+<div class="bg-[#294237]/50 p-4 rounded-xl">
+<div class="relative flex items-end justify-start bg-cover bg-center aspect-video rounded-lg p-4" data-alt="Live camera feed from the front of a robot showing a park pathway." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDazPRjgy9PmHGqrsiIcS9lTKv1fp6Xwz16f-_vPnfi0flhY8y2IetHEZVTwHpoPkMG57_YmA3ryFc1JNljDOvHZfo_mXV0LO5p10qkJDWcMlbi6abntRTocbaYvUhXGW-P5q-nt0gYMce6N3LgOz4BVfmHiu2zlggShF8TJGMPWSzmXKL4BtSFlEiHPTDZSzH_UwtuwdTFXynR1Cu4IM3C-u2xfrqcYjKl7YhCcGapGpPYZhhPQo4UFUHiIPnuc85-_CVVpgs24yY");'>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg"></div>
+<div class="relative flex justify-between items-center w-full">
+<div>
+<h3 class="text-white font-bold text-lg">ROB-001</h3>
+<p class="text-sm text-green-300">Status: Collecting</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-critical animate-pulse"></div>
+<span class="text-white font-medium">REC</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Robot Vitals -->
+<div class="bg-[#294237]/50 p-6 rounded-xl">
+<h3 class="text-white font-bold text-xl mb-4">Robot Vitals</h3>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+<div class="flex flex-col items-center gap-2">
+<div class="relative size-24">
+<svg class="size-full" height="36" viewbox="0 0 36 36" width="36" xmlns="http://www.w3.org/2000/svg"><circle class="stroke-current text-white/10" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle><circle class="stroke-current text-success" cx="18" cy="18" fill="none" r="16" stroke-dasharray="88" stroke-dashoffset="100" stroke-width="3" style="stroke-dashoffset: calc(100 - (100 * 88) / 100); transform: rotate(-90deg); transform-origin: 50% 50%;"></circle></svg>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold text-lg">88%</div>
+</div>
+<p class="text-sm text-gray-300">Battery Level</p>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="relative size-24">
+<svg class="size-full" height="36" viewbox="0 0 36 36" width="36" xmlns="http://www.w3.org/2000/svg"><circle class="stroke-current text-white/10" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle><circle class="stroke-current text-warning" cx="18" cy="18" fill="none" r="16" stroke-dasharray="65" stroke-dashoffset="100" stroke-width="3" style="stroke-dashoffset: calc(100 - (100 * 65) / 100); transform: rotate(-90deg); transform-origin: 50% 50%;"></circle></svg>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold text-lg">65%</div>
+</div>
+<p class="text-sm text-gray-300">Bin Capacity</p>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="relative size-24">
+<svg class="size-full" height="36" viewbox="0 0 36 36" width="36" xmlns="http://www.w3.org/2000/svg"><circle class="stroke-current text-white/10" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle><circle class="stroke-current text-success" cx="18" cy="18" fill="none" r="16" stroke-dasharray="92" stroke-dashoffset="100" stroke-width="3" style="stroke-dashoffset: calc(100 - (100 * 92) / 100); transform: rotate(-90deg); transform-origin: 50% 50%;"></circle></svg>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold text-lg">92%</div>
+</div>
+<p class="text-sm text-gray-300">Connectivity</p>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="relative size-24">
+<svg class="size-full" height="36" viewbox="0 0 36 36" width="36" xmlns="http://www.w3.org/2000/svg"><circle class="stroke-current text-white/10" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle><circle class="stroke-current text-success" cx="18" cy="18" fill="none" r="16" stroke-dasharray="45" stroke-dashoffset="100" stroke-width="3" style="stroke-dashoffset: calc(100 - (100 * 45) / 100); transform: rotate(-90deg); transform-origin: 50% 50%;"></circle></svg>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-bold text-lg">45°C</div>
+</div>
+<p class="text-sm text-gray-300">Motor Temp</p>
+</div>
+</div>
+</div>
+<!-- Map -->
+<div class="bg-[#294237]/50 p-4 rounded-xl">
+<h3 class="text-white font-bold text-xl mb-4 px-2">Live Fleet Location</h3>
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg object-cover" data-alt="A dark-themed map of a city park with a blue line showing a robot's path and a green dot for its current location." data-location="City Park" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCdvN4JIhd_gAdoES8-Y3yzLq0kwAqz2M3cO62VCwepqReISNQnuqULoD2SL3ooKEJIuQhnc2x4-iI_gL9b4jyvQ673GcDQqZ5DaAGlsil_prVCadWWxB-zXHQA8sKHQryYzf269ssmSlkCVvwZCZ-OkFQCKZzcLT_4wMgQLec4MfOJX1XKX24VPI4oxp99sah2XYop6YTmcMrFzZXTLKQusyi3lzWEOA048QqETfnfnm1bgT_tv1eii0M_AuwHPiQRAHthF4GZffk");'></div>
+</div>
+</div>
+<!-- Right Column -->
+<div class="lg:col-span-1 flex flex-col gap-6">
+<!-- Alerts -->
+<div class="bg-[#294237]/50 p-6 rounded-xl">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-white font-bold text-xl">Urgent Alerts</h3>
+<div class="flex items-center justify-center size-7 rounded-full bg-critical text-white text-sm font-bold">2</div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="bg-critical/20 border border-critical rounded-lg p-3">
+<p class="font-medium text-red-200">Robot 04: Bin Full</p>
+<p class="text-sm text-red-300">Requires immediate emptying.</p>
+</div>
+<div class="bg-warning/20 border border-warning rounded-lg p-3">
+<p class="font-medium text-amber-200">Robot 02: Path Blocked</p>
+<p class="text-sm text-amber-300">Obstacle detected. Rerouting.</p>
+</div>
+</div>
+</div>
+<!-- Recent Events -->
+<div class="bg-[#294237]/50 p-6 rounded-xl">
+<h3 class="text-white font-bold text-xl mb-4">Recent Events</h3>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center size-10 rounded-lg bg-primary/30 text-success">
+<span class="material-symbols-outlined">recycling</span>
+</div>
+<div class="flex-1">
+<p class="text-white font-medium">Waste Detected</p>
+<p class="text-sm text-gray-400">ROB-001 at Sector 4</p>
+</div>
+<p class="text-sm text-gray-500">2m ago</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center size-10 rounded-lg bg-primary/30 text-success">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div class="flex-1">
+<p class="text-white font-medium">Bin Emptied</p>
+<p class="text-sm text-gray-400">ROB-004 at Dock 2</p>
+</div>
+<p class="text-sm text-gray-500">15m ago</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center size-10 rounded-lg bg-primary/30 text-warning">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div class="flex-1">
+<p class="text-white font-medium">Obstacle Avoided</p>
+<p class="text-sm text-gray-400">ROB-002 near Fountain</p>
+</div>
+<p class="text-sm text-gray-500">22m ago</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center size-10 rounded-lg bg-primary/30 text-success">
+<span class="material-symbols-outlined">recycling</span>
+</div>
+<div class="flex-1">
+<p class="text-white font-medium">Waste Detected</p>
+<p class="text-sm text-gray-400">ROB-003 at Main Path</p>
+</div>
+<p class="text-sm text-gray-500">28m ago</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center justify-center size-10 rounded-lg bg-primary/30 text-blue-300">
+<span class="material-symbols-outlined">power</span>
+</div>
+<div class="flex-1">
+<p class="text-white font-medium">Charging Started</p>
+<p class="text-sm text-gray-400">ROB-001 at Dock 1</p>
+</div>
+<p class="text-sm text-gray-500">45m ago</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

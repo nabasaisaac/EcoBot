@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Autonomous Waste Collector</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#17563a",
+            "background-light": "#ffffff",
+            "background-dark": "#f7fafc",
+            "text-primary": "#1a202c",
+            "text-secondary": "#4a5568",
+          },
+          fontFamily: {
+            "display": ["Space Grotesk", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+  </style>
+</head>
+<body class="bg-background-light text-text-primary font-display">
+<div class="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="flex flex-1 justify-center">
+<div class="layout-content-container flex flex-col w-full">
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 px-4 sm:px-10 py-3 bg-background-light/80 backdrop-blur-sm">
+<div class="flex items-center gap-4 text-text-primary">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-4xl">recycling</span>
+</div>
+<h2 class="text-text-primary text-lg font-bold leading-tight tracking-[-0.015em]">Autonomous Waste Collector</h2>
+</div>
+<nav class="hidden md:flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-text-secondary text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">About Robot</a>
+<a class="text-text-secondary text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Research</a>
+<a class="text-text-secondary text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Contact</a>
+</div>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+<span class="truncate">Login</span>
+</button>
+</nav>
+<div class="md:hidden">
+<button class="text-text-primary">
+<span class="material-symbols-outlined text-3xl">menu</span>
+</button>
+</div>
+</header>
+<main class="flex-grow">
+<section class="w-full @container px-4 sm:px-10 lg:px-20 xl:px-40 py-5">
+<div class="max-w-[1280px] mx-auto">
+<div class="flex min-h-[520px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 rounded-xl items-start justify-end p-6 @[480px]:p-12" data-alt="Futuristic autonomous rubbish collection robot in a clean, green urban environment." style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.5) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCazERXvxxZJd_HqnE8azZa05nez0eylys69TcHLFMaK1coRZG1-lk9ElUrdqdTzcWhE7NKZOdYP_Dt2N91rP2WVxOlD5oVO0E3UczwDN3cRPemuzJQyvcPdU-UcGYAAj747GWVrRc0V5wmMn0s_ZtDsqJ3IVOZ0wByY3Y2D8zWNowmgaAlhdtLSHeMFlIxLHuczWkngQyOSkBuwjf9SZTd57PnzA112zjoOW_To5IjbGpyeRP2T9_HEbZJiOPCxa2Qwhfrm1KBqcc");'>
+<div class="flex flex-col gap-2 text-left max-w-2xl">
+<h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
+                      Revolutionizing Waste Management in Uganda
+                    </h1>
+<p class="text-white text-base font-normal leading-normal @[480px]:text-lg @[480px]:font-normal @[480px]:leading-normal">
+                      Our autonomous robot leverages AI and IoT to create a cleaner, more sustainable future for communities.
+                    </p>
+</div>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] hover:opacity-90 transition-opacity">
+<span class="truncate">Login to Access Dashboard</span>
+</button>
+</div>
+</div>
+</section>
+<section class="w-full px-4 sm:px-10 lg:px-20 xl:px-40 py-16 sm:py-24">
+<div class="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+<div class="order-2 md:order-1">
+<h2 class="text-text-primary text-3xl sm:text-4xl font-bold leading-tight tracking-[-0.015em]">The Challenge and Our Solution</h2>
+<p class="text-text-secondary text-base font-normal leading-normal mt-4">
+                    Uganda faces significant challenges with waste management, leading to environmental and public health concerns. Our intelligent robot directly addresses these issues by providing efficient, autonomous, and data-driven rubbish collection.
+                  </p>
+<p class="text-text-secondary text-base font-normal leading-normal mt-4">
+                    By automating the collection process, we aim to reduce pollution, improve sanitation, and provide valuable insights into waste generation patterns, helping to build a smarter and cleaner urban environment.
+                  </p>
+</div>
+<div class="order-1 md:order-2">
+<div class="w-full bg-center bg-no-repeat bg-cover aspect-video rounded-xl" data-alt="An infographic showing cluttered streets in a city in Uganda contrasted with a clean street." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBwuhLc66p0iGdugsYOeL_O_9Nu9FsmWRc2kBd7-9tI4tvxJ93cFxf5tly0rydQmvmdiinsUhPm6Ox80W8Xo7NaYfd3SkqKN8_iVyO5wV0XUST1W8RhKyz9QW3mqhcM5spJ3mbJfcLcf5oozxQ4aXs6bKiUl7oBkYRBrX5qPDoHNWbb9JP-E-u2I8KmvNHPkbB_IfQg19X--AL1iGPgmPcP74Li5LYlfA3mll0XCgPr1P5tjaEAWoKfRGhwTaVHd8D0mYwPin4bpc0");'></div>
+</div>
+</div>
+</section>
+<section class="w-full px-4 sm:px-10 lg:px-20 xl:px-40 py-16 sm:py-24 bg-background-dark">
+<div class="max-w-[1280px] mx-auto">
+<div class="text-center mb-12">
+<h2 class="text-text-primary text-3xl sm:text-4xl font-bold leading-tight tracking-[-0.015em]">Core Features</h2>
+<p class="text-text-secondary mt-2 max-w-2xl mx-auto">Harnessing cutting-edge technology for a cleaner tomorrow.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="flex flex-col items-center text-center p-8 rounded-xl bg-background-light shadow-md">
+<div class="flex items-center justify-center size-16 rounded-full bg-primary mb-6">
+<span class="material-symbols-outlined text-white text-4xl">visibility</span>
+</div>
+<h3 class="text-text-primary text-xl font-bold mb-2">AI Vision</h3>
+<p class="text-text-secondary text-sm leading-relaxed">Utilizes advanced computer vision to accurately detect, identify, and sort different types of waste materials on the go.</p>
+</div>
+<div class="flex flex-col items-center text-center p-8 rounded-xl bg-background-light shadow-md">
+<div class="flex items-center justify-center size-16 rounded-full bg-primary mb-6">
+<span class="material-symbols-outlined text-white text-4xl">navigation</span>
+</div>
+<h3 class="text-text-primary text-xl font-bold mb-2">Autonomous Navigation</h3>
+<p class="text-text-secondary text-sm leading-relaxed">Smartly plans and navigates optimal routes through complex urban environments, avoiding obstacles with precision.</p>
+</div>
+<div class="flex flex-col items-center text-center p-8 rounded-xl bg-background-light shadow-md">
+<div class="flex items-center justify-center size-16 rounded-full bg-primary mb-6">
+<span class="material-symbols-outlined text-white text-4xl">hub</span>
+</div>
+<h3 class="text-text-primary text-xl font-bold mb-2">IoT Data Hub</h3>
+<p class="text-text-secondary text-sm leading-relaxed">Transmits real-time data on waste levels, collection times, and system status to the central admin dashboard.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="w-full border-t border-solid border-gray-200 px-4 sm:px-10 lg:px-20 xl:px-40 py-10">
+<div class="max-w-[1280px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="size-5 text-primary">
+<span class="material-symbols-outlined text-3xl">recycling</span>
+</div>
+<p class="text-text-secondary text-sm">© 2024 Autonomous Waste Collector. All Rights Reserved.</p>
+</div>
+<div class="flex items-center gap-6">
+<a class="text-text-secondary hover:text-text-primary transition-colors" href="#">About</a>
+<a class="text-text-secondary hover:text-text-primary transition-colors" href="#">Research</a>
+<a class="text-text-secondary hover:text-text-primary transition-colors" href="#">Contact</a>
+</div>
+</div>
+</footer>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

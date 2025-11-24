@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Dashboard - Autonomous Fleet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#165539",
+              "background-light": "#f6f8f7",
+              "background-dark": "#131f1a",
+              "container-light": "#ffffff",
+              "container-dark": "#1d2c25",
+              "border-light": "#e0e0e0",
+              "border-dark": "#3a5f4e",
+              "text-light-primary": "#333333",
+              "text-dark-primary": "#ffffff",
+              "text-light-secondary": "#666666",
+              "text-dark-secondary": "#9ac1af",
+              "success": "#2ECC71",
+              "warning": "#F39C12",
+              "error": "#E74C3C",
+              "info": "#3498DB"
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light-primary dark:text-text-dark-primary">
+<div class="flex h-screen">
+<!-- SideNavBar -->
+<aside class="flex w-64 flex-col bg-container-light dark:bg-container-dark border-r border-border-light dark:border-border-dark">
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 p-2">
+<div class="flex items-center justify-center size-10 rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined text-2xl">recycling</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-text-light-primary dark:text-text-dark-primary text-base font-bold leading-normal">FleetAdmin</h1>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">IoT Fleet Manager</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary dark:text-success" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/5 dark:hover:bg-primary/10" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<p class="text-sm font-medium leading-normal">Robots</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/5 dark:hover:bg-primary/10" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<p class="text-sm font-medium leading-normal">Analytics</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/5 dark:hover:bg-primary/10" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 p-2 border-t border-border-light dark:border-border-dark pt-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Admin user avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCJzqf400eRd0EPL4sZkDOvkkMOROg9t-mZj8VY8vH4Z7OefIHtDHczVaLlskzwKQWw1xrMlKI5VtpQ8Kg2dFMg3aCIcj_2_KxIdmgdbcr5tdurtdC96EYaoM-h_sjsq1tLehhDPECf9Dk3C_HQChzb2BE4jsCOEwE3dfZ09ZFjKYzvKeaKgX4rrstfF8cs7XStBTQDmLrAr8ZNPhQPBj-f71car274ZOhIZBSUlu3TnMZgtA4_W-t6wxKVOqZd_hj5wwia19lYMR0");'></div>
+<div class="flex flex-col">
+<h1 class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal">Admin User</h1>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">Logout</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<div class="flex flex-1 flex-col overflow-y-auto">
+<!-- TopNavBar -->
+<header class="flex sticky top-0 items-center justify-between whitespace-nowrap border-b border-border-light dark:border-border-dark px-10 py-3 bg-container-light/80 dark:bg-container-dark/80 backdrop-blur-sm">
+<h2 class="text-text-light-primary dark:text-text-dark-primary text-lg font-bold leading-tight tracking-[-0.015em]">Admin Dashboard</h2>
+<div class="flex flex-1 justify-end gap-4">
+<label class="flex flex-col w-full !h-10 max-w-sm">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-text-light-secondary dark:text-text-dark-secondary flex border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-light-primary dark:text-text-dark-primary focus:outline-0 focus:ring-1 focus:ring-primary border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark h-full placeholder:text-text-light-secondary dark:placeholder:text-text-dark-secondary px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Search robots, logs, etc..." value=""/>
+</div>
+</label>
+<button class="relative flex min-w-10 max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark text-text-light-secondary dark:text-text-dark-secondary gap-2 text-sm font-bold leading-normal tracking-[0.015em] px-2.5">
+<span class="material-symbols-outlined">notifications</span>
+<div class="absolute top-1.5 right-1.5 size-2.5 bg-error rounded-full border-2 border-container-light dark:border-container-dark"></div>
+</button>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-6 lg:p-10 grid grid-cols-12 gap-6">
+<!-- Left Column -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
+<!-- Stats Cards -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="flex flex-col gap-2 rounded-xl p-4 bg-container-light dark:bg-container-dark border border-border-light dark:border-border-dark">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-medium leading-normal">Active Robots</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-2xl font-bold leading-tight">5/6</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-4 bg-container-light dark:bg-container-dark border border-border-light dark:border-border-dark">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-medium leading-normal">Avg. Battery</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-2xl font-bold leading-tight">88%</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-4 bg-container-light dark:bg-container-dark border border-border-light dark:border-border-dark">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-medium leading-normal">Connectivity</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-2xl font-bold leading-tight text-success">Strong</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-4 bg-container-light dark:bg-container-dark border border-border-light dark:border-border-dark">
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-medium leading-normal">Waste Capacity</p>
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-2xl font-bold leading-tight">75%</p>
+</div>
+</div>
+<!-- Map -->
+<div class="flex flex-col bg-container-light dark:bg-container-dark rounded-xl border border-border-light dark:border-border-dark p-4 gap-4">
+<h3 class="text-text-light-primary dark:text-text-dark-primary font-bold text-lg">Real-Time Fleet Location</h3>
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg object-cover" data-alt="Map showing the live location of several autonomous robots in a city grid." data-location="City Center" style='background-image: url("https://placeholder.pics/svg/300");'></div>
+</div>
+<!-- Shortcut Action Cards -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl bg-container-light dark:bg-container-dark border border-border-light dark:border-border-dark hover:bg-primary/5 dark:hover:bg-primary/10 cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary dark:text-success">videocam</span>
+<p class="font-semibold text-sm">Live Monitoring</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl bg-container-light dark:bg-container-dark border border-border-light dark:border-border-dark hover:bg-primary/5 dark:hover:bg-primary/10 cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary dark:text-success">gamepad</span>
+<p class="font-semibold text-sm">Manual Control</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl bg-container-light dark:bg-container-dark border border-border-light dark:border-border-dark hover:bg-primary/5 dark:hover:bg-primary/10 cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary dark:text-success">analytics</span>
+<p class="font-semibold text-sm">View Analytics</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl bg-container-light dark:bg-container-dark border border-border-light dark:border-border-dark hover:bg-primary/5 dark:hover:bg-primary/10 cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary dark:text-success">build</span>
+<p class="font-semibold text-sm">Maintenance</p>
+</div>
+</div>
+</div>
+<!-- Right Column -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+<!-- Notifications Panel -->
+<div class="flex flex-col bg-container-light dark:bg-container-dark rounded-xl border border-border-light dark:border-border-dark p-4 gap-4">
+<div class="flex justify-between items-center">
+<h3 class="text-text-light-primary dark:text-text-dark-primary font-bold text-lg">Notifications</h3>
+<a class="text-sm text-primary dark:text-success font-medium" href="#">View all</a>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-start gap-3 p-3 rounded-lg bg-error/10 dark:bg-error/20">
+<span class="material-symbols-outlined text-error mt-0.5">error</span>
+<div>
+<p class="font-semibold text-sm text-error">Critical: Obstacle Detected</p>
+<p class="text-xs text-text-light-secondary dark:text-text-dark-secondary">Robot RBT-003 has stopped. Manual intervention required.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 rounded-lg bg-warning/10 dark:bg-warning/20">
+<span class="material-symbols-outlined text-warning mt-0.5">warning</span>
+<div>
+<p class="font-semibold text-sm text-warning">Alert: Bin Full</p>
+<p class="text-xs text-text-light-secondary dark:text-text-dark-secondary">Robot RBT-005 bin is at 95% capacity. Returning to base.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 rounded-lg bg-info/10 dark:bg-info/20">
+<span class="material-symbols-outlined text-info mt-0.5">info</span>
+<div>
+<p class="font-semibold text-sm text-info">Info: Route Completed</p>
+<p class="text-xs text-text-light-secondary dark:text-text-dark-secondary">Robot RBT-001 has completed its scheduled route.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity Log -->
+<div class="flex flex-col bg-container-light dark:bg-container-dark rounded-xl border border-border-light dark:border-border-dark p-4 gap-4 flex-1">
+<h3 class="text-text-light-primary dark:text-text-dark-primary font-bold text-lg">Recent Activity</h3>
+<div class="flex-1 overflow-y-auto pr-2">
+<ul class="flex flex-col gap-4">
+<li class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 rounded-full bg-primary/10 dark:bg-primary/20 text-primary dark:text-success">
+<span class="material-symbols-outlined text-base">route</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Route Started - RBT-004</p>
+<p class="text-xs text-text-light-secondary dark:text-text-dark-secondary">2 mins ago</p>
+</div>
+</li>
+<li class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 rounded-full bg-primary/10 dark:bg-primary/20 text-primary dark:text-success">
+<span class="material-symbols-outlined text-base">delete</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Bin Emptied - RBT-002</p>
+<p class="text-xs text-text-light-secondary dark:text-text-dark-secondary">5 mins ago</p>
+</div>
+</li>
+<li class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 rounded-full bg-warning/10 dark:bg-warning/20 text-warning">
+<span class="material-symbols-outlined text-base">sensors_off</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Lost Connection - RBT-006</p>
+<p class="text-xs text-text-light-secondary dark:text-text-dark-secondary">8 mins ago</p>
+</div>
+</li>
+<li class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 rounded-full bg-primary/10 dark:bg-primary/20 text-primary dark:text-success">
+<span class="material-symbols-outlined text-base">power</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Now Charging - RBT-001</p>
+<p class="text-xs text-text-light-secondary dark:text-text-dark-secondary">15 mins ago</p>
+</div>
+</li>
+<li class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 rounded-full bg-error/10 dark:bg-error/20 text-error">
+<span class="material-symbols-outlined text-base">block</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Obstacle Detected - RBT-003</p>
+<p class="text-xs text-text-light-secondary dark:text-text-dark-secondary">18 mins ago</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

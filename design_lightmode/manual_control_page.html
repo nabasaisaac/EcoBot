@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ARC-007 Manual Control</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24;
+        }
+    </style>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#17563a",
+                        "primary-hover": "#11422c",
+                        "primary-light": "#e8f5ee",
+                        "light-gray": "#f0f2f5",
+                        "gray-text": "#6b7280",
+                        "dark-text": "#111827",
+                        "border-color": "#e5e7eb",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-light-gray font-display text-dark-text">
+<div class="relative flex min-h-screen w-full">
+<aside class="flex w-64 flex-col bg-white p-4 border-r border-border-color">
+<div class="flex flex-col gap-4">
+<div class="flex gap-3 items-center">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Robot avatar with green circular pattern" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDwicdekxPvjIq9_zAW_V_isJlZRRsGGu2flVk9kf7f9x_8bpSvHaekH_pHvCmhLGxJbsHjQsFaiBN3MmgNlmGblYvSU4oMkRMskANNCvYzE_EFx79w4g2ZrS81IJpKhI3WTHNaXXB-bmC5Zpm_M_nDBh_MKQU76c1ybIa4sPd-qUc0DO86y1InAvjwkY7dfIG3QmH97UmxT4YDLDbaMfhRFAlkZo-zkRYtqFHaLKHnfIeyaKin1fvVN946O3_kStSBlXHhWdV_VaU");'></div>
+<div class="flex flex-col">
+<h1 class="text-dark-text text-base font-semibold leading-normal">ARC-007</h1>
+<p class="text-primary text-sm font-medium leading-normal flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                            Online
+                        </p>
+</div>
+</div>
+<nav class="flex flex-col gap-1 mt-4">
+<a class="flex items-center gap-3 px-3 py-2 text-gray-text hover:text-dark-text hover:bg-light-gray rounded-md" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md bg-primary-light text-primary" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">gamepad</span>
+<p class="text-sm font-medium leading-normal">Manual Control</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-text hover:text-dark-text hover:bg-light-gray rounded-md" href="#">
+<span class="material-symbols-outlined text-xl">calendar_today</span>
+<p class="text-sm font-medium leading-normal">Robot Schedule</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-text hover:text-dark-text hover:bg-light-gray rounded-md" href="#">
+<span class="material-symbols-outlined text-xl">build</span>
+<p class="text-sm font-medium leading-normal">Maintenance Logs</p>
+</a>
+</nav>
+</div>
+<div class="mt-auto flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 text-gray-text hover:text-dark-text hover:bg-light-gray rounded-md" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-text hover:text-dark-text hover:bg-light-gray rounded-md" href="#">
+<span class="material-symbols-outlined text-xl">logout</span>
+<p class="text-sm font-medium leading-normal">Logout</p>
+</a>
+</div>
+</aside>
+<main class="flex-1 p-8">
+<div class="flex flex-col gap-8">
+<header class="flex flex-wrap justify-between gap-3">
+<div class="flex flex-col gap-1">
+<p class="text-dark-text text-3xl font-bold leading-tight">Manual Robot Control</p>
+<p class="text-gray-text text-base font-normal leading-normal">Real-time remote operation of ARC-007</p>
+</div>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2 flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<p class="text-gray-text text-sm font-medium leading-normal">Live Camera Feed</p>
+<p class="text-gray-text text-sm font-normal leading-normal">Latency: 50ms</p>
+</div>
+<div class="relative flex items-center justify-center bg-gray-900 bg-cover bg-center aspect-video rounded-xl overflow-hidden" data-alt="Live video stream from robot's camera showing a pathway" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBRLwONZTijW7IeTzW5teV4W0w4H1PM5TBXQ14jrqn302xpwCUeeM4T1GyiQ3dEW0b8zQeNW_oE7yhn5oT-AM0Ix8s3d7bh0ZTqp3dhV0dH3FvKYhhZpu5nWIZKQlNL0-W6B0I0cDcjX5Ibjgh2RczG5hTevRhc-WRFj08Y1vNlS0IIkiwzfav46GI_k-PsDUlcjed_WUv_NQIYQlt3x_wPBve72lxZl6lYdJDF2Z9SsSWqidX1uQlP5DsKe-c3L3wSJYYZXaJn4HE");'>
+<button class="flex shrink-0 items-center justify-center rounded-full size-16 bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 transition-colors">
+<span class="material-symbols-outlined text-5xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-6">
+<div class="bg-white p-6 rounded-xl border border-border-color">
+<h2 class="text-dark-text text-xl font-semibold leading-tight mb-6">Controls</h2>
+<div class="flex justify-center items-center mb-6">
+<div class="relative w-48 h-48 bg-light-gray rounded-full flex items-center justify-center border border-border-color">
+<div class="absolute w-full h-full text-gray-400">
+<div class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 p-2"><span class="material-symbols-outlined text-3xl">arrow_back</span></div>
+<div class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 p-2"><span class="material-symbols-outlined text-3xl">arrow_forward</span></div>
+<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 p-2"><span class="material-symbols-outlined text-3xl">arrow_upward</span></div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 p-2"><span class="material-symbols-outlined text-3xl">arrow_downward</span></div>
+</div>
+<div class="w-24 h-24 bg-primary rounded-full cursor-grab active:cursor-grabbing shadow-lg"></div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="col-span-1 bg-primary text-white font-semibold py-3 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-primary-hover transition-colors">
+<span class="material-symbols-outlined text-xl">play_arrow</span> Start
+                                </button>
+<button class="col-span-1 bg-gray-200 text-dark-text font-semibold py-3 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-gray-300 transition-colors">
+<span class="material-symbols-outlined text-xl">pause</span> Stop
+                                </button>
+<button class="col-span-2 bg-gray-200 text-dark-text py-3 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-gray-300 transition-colors font-medium">
+<span class="material-symbols-outlined text-xl">recycling</span> Collect Rubbish
+                                </button>
+<button class="col-span-2 bg-red-600 text-white font-bold py-3 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-red-700 transition-colors">
+<span class="material-symbols-outlined text-xl">emergency</span> EMERGENCY STOP
+                                </button>
+</div>
+</div>
+<div class="bg-white p-6 rounded-xl border border-border-color">
+<h2 class="text-dark-text text-xl font-semibold leading-tight mb-4">Live Status</h2>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3 text-gray-text">
+<span class="material-symbols-outlined text-primary text-xl">battery_5_bar</span>
+<p class="text-sm">Battery Level</p>
+</div>
+<p class="font-semibold text-dark-text text-sm">85%</p>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3 text-gray-text">
+<span class="material-symbols-outlined text-primary text-xl">signal_cellular_4_bar</span>
+<p class="text-sm">Signal Strength</p>
+</div>
+<p class="font-semibold text-dark-text text-sm">Excellent</p>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3 text-gray-text">
+<span class="material-symbols-outlined text-gray-500 text-xl">sync</span>
+<p class="text-sm">Motor Status</p>
+</div>
+<p class="font-medium text-dark-text text-sm">Idle</p>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3 text-gray-text">
+<span class="material-symbols-outlined text-gray-500 text-xl">smart_toy</span>
+<p class="text-sm">Current Mode</p>
+</div>
+<p class="font-medium text-primary text-sm">Manual Control</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

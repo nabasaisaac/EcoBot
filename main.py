@@ -1,39 +1,35 @@
 from ultralytics import YOLO
 import cv2
 
-# Load your trained YOLO model
-model = YOLO("yolo11n.pt")
+# Load model
+model = YOLO(r"./yolo_weights/yolov8n.pt")
 
-# Open the webcam (0 is usually the default camera)
+# Open webcam
 cap = cv2.VideoCapture(0)
 
 if not cap.isOpened():
-    print("Error: Could not open camera.")
+    print("Error: Could not open webcam.")
     exit()
-
-# Create a fullscreen window
-cv2.namedWindow("YOLO Face & Fingers Detection", cv2.WINDOW_NORMAL)
-cv2.setWindowProperty("YOLO Face & Fingers Detection", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
 while True:
     ret, frame = cap.read()
     if not ret:
-        print("Failed to grab frame")
+        print("Failed to capture frame.")
         break
 
-    # Run YOLO detection on the frame
+    # Flip camera horizontally (mirror effect)
+    frame = cv2.flip(frame, 1)
+
+    # YOLO detection
     results = model(frame)
+    annotated = results[0].plot()
 
-    # Annotate frame with detected objects
-    annotated_frame = results[0].plot()
+    cv2.namedWindow("Webcam Detection", cv2.WINDOW_NORMAL)
+    cv2.imshow("Webcam Detection", annotated)
 
-    # Show the annotated frame in fullscreen
-    cv2.imshow("YOLO Face & Fingers Detection", annotated_frame)
-
-    # Break the loop if 'q' is pressed
+    # Quit with q
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-# Release the camera and close windows
 cap.release()
 cv2.destroyAllWindows()

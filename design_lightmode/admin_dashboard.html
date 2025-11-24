@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Dashboard - Autonomous Fleet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#17563a",
+              "background": "#f8fafc",
+              "container": "#ffffff",
+              "border-color": "#e2e8f0",
+              "text-primary": "#1e293b",
+              "text-secondary": "#64748b",
+              "success": "#22c55e",
+              "warning": "#f97316",
+              "error": "#ef4444",
+              "info": "#3b82f6"
+            },
+            fontFamily: {
+              "sans": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "0.75rem", "xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background font-sans text-text-primary">
+<div class="flex h-screen">
+<aside class="flex w-64 flex-col bg-container border-r border-border-color">
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 p-2">
+<div class="flex items-center justify-center size-10 rounded-lg bg-primary text-white">
+<span class="material-symbols-outlined text-2xl">recycling</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-text-primary text-base font-bold leading-normal">FleetAdmin</h1>
+<p class="text-text-secondary text-sm font-normal leading-normal">IoT Fleet Manager</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 mt-4 px-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-md bg-primary/10 text-primary font-semibold" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-text-secondary hover:text-text-primary" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<p class="text-sm font-medium leading-normal">Robots</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-text-secondary hover:text-text-primary" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<p class="text-sm font-medium leading-normal">Analytics</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-gray-100 text-text-secondary hover:text-text-primary" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 p-2 border-t border-border-color pt-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Admin user avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCJzqf400eRd0EPL4sZkDOvkkMOROg9t-mZj8VY8vH4Z7OefIHtDHczVaLlskzwKQWw1xrMlKI5VtpQ8Kg2dFMg3aCIcj_2_KxIdmgdbcr5tdurtdC96EYaoM-h_sjsq1tLehhDPECf9Dk3C_HQChzb2BE4jsCOEwE3dfZ09ZFjKYzvKeaKgX4rrstfF8cs7XStBTQDmLrAr8ZNPhQPBj-f71car274ZOhIZBSUlu3TnMZgtA4_W-t6wxKVOqZd_hj5wwia19lYMR0");'></div>
+<div class="flex flex-col">
+<h1 class="text-text-primary text-sm font-medium leading-normal">Admin User</h1>
+<p class="text-text-secondary text-xs font-normal leading-normal hover:text-primary cursor-pointer">Logout</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<div class="flex flex-1 flex-col overflow-y-auto">
+<header class="flex sticky top-0 items-center justify-between whitespace-nowrap border-b border-border-color px-10 py-3 bg-container/80 backdrop-blur-sm">
+<h2 class="text-text-primary text-lg font-bold leading-tight tracking-[-0.015em]">Admin Dashboard</h2>
+<div class="flex flex-1 justify-end gap-4">
+<label class="flex flex-col w-full !h-10 max-w-sm">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-text-secondary flex border border-border-color bg-background items-center justify-center pl-4 rounded-l-md border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-md text-text-primary focus:outline-0 focus:ring-1 focus:ring-primary border border-border-color bg-background h-full placeholder:text-text-secondary px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Search robots, logs, etc..." value=""/>
+</div>
+</label>
+<button class="relative flex min-w-10 max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-10 bg-container border border-border-color text-text-secondary gap-2 text-sm font-bold leading-normal tracking-[0.015em] px-2.5">
+<span class="material-symbols-outlined">notifications</span>
+<div class="absolute top-1.5 right-1.5 size-2.5 bg-error rounded-full border-2 border-container"></div>
+</button>
+</div>
+</header>
+<main class="flex-1 p-6 lg:p-10 grid grid-cols-12 gap-6">
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="flex flex-col gap-2 rounded-lg p-4 bg-container border border-border-color">
+<p class="text-text-secondary text-sm font-medium leading-normal">Active Robots</p>
+<p class="text-text-primary tracking-light text-2xl font-bold leading-tight">5/6</p>
+</div>
+<div class="flex flex-col gap-2 rounded-lg p-4 bg-container border border-border-color">
+<p class="text-text-secondary text-sm font-medium leading-normal">Avg. Battery</p>
+<p class="text-text-primary tracking-light text-2xl font-bold leading-tight">88%</p>
+</div>
+<div class="flex flex-col gap-2 rounded-lg p-4 bg-container border border-border-color">
+<p class="text-text-secondary text-sm font-medium leading-normal">Connectivity</p>
+<p class="text-success tracking-light text-2xl font-bold leading-tight">Strong</p>
+</div>
+<div class="flex flex-col gap-2 rounded-lg p-4 bg-container border border-border-color">
+<p class="text-text-secondary text-sm font-medium leading-normal">Waste Capacity</p>
+<p class="text-text-primary tracking-light text-2xl font-bold leading-tight">75%</p>
+</div>
+</div>
+<div class="flex flex-col bg-container rounded-lg border border-border-color p-4 gap-4">
+<h3 class="text-text-primary font-bold text-lg">Real-Time Fleet Location</h3>
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-md object-cover" data-alt="Map showing the live location of several autonomous robots in a city grid." data-location="City Center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCLBdURdgQ9NNS5duRHchuUEP-VchCS_Gkxb5CDVZmZmENEdA5SRVJc1QNcCSmYwjINtd_vIdw23-0NWXxEHR0aC-bc27jiWY0SRONGCAxVexNeGNRvS1l6h2o-r28Kr-sCvl4x_xop7B2nA0XvNorw-zARWGoZP6twWsvLuznrszwrAehFNxUm8g6SK-4AlUo5XVNkQDb5chZBUrMLXdmHMGIFfrkZB7EQim8Zbk5MAYCLcB55N_pKbBhODKczzDTYnC66lu52ce8");'></div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="flex flex-col items-center justify-center gap-3 p-4 rounded-lg bg-container border border-border-color hover:bg-primary/5 cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary">videocam</span>
+<p class="font-semibold text-sm">Live Monitoring</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-3 p-4 rounded-lg bg-container border border-border-color hover:bg-primary/5 cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary">gamepad</span>
+<p class="font-semibold text-sm">Manual Control</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-3 p-4 rounded-lg bg-container border border-border-color hover:bg-primary/5 cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary">analytics</span>
+<p class="font-semibold text-sm">View Analytics</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-3 p-4 rounded-lg bg-container border border-border-color hover:bg-primary/5 cursor-pointer">
+<span class="material-symbols-outlined text-3xl text-primary">build</span>
+<p class="font-semibold text-sm">Maintenance</p>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+<div class="flex flex-col bg-container rounded-lg border border-border-color p-4 gap-4">
+<div class="flex justify-between items-center">
+<h3 class="text-text-primary font-bold text-lg">Notifications</h3>
+<a class="text-sm text-primary font-medium" href="#">View all</a>
+</div>
+<div class="flex flex-col gap-3">
+<div class="flex items-start gap-3 p-3 rounded-md bg-error/10">
+<span class="material-symbols-outlined text-error mt-0.5">error</span>
+<div>
+<p class="font-semibold text-sm text-error">Critical: Obstacle Detected</p>
+<p class="text-xs text-text-secondary">Robot RBT-003 has stopped. Manual intervention required.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 rounded-md bg-warning/10">
+<span class="material-symbols-outlined text-warning mt-0.5">warning</span>
+<div>
+<p class="font-semibold text-sm text-warning">Alert: Bin Full</p>
+<p class="text-xs text-text-secondary">Robot RBT-005 bin is at 95% capacity. Returning to base.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 rounded-md bg-info/10">
+<span class="material-symbols-outlined text-info mt-0.5">info</span>
+<div>
+<p class="font-semibold text-sm text-info">Info: Route Completed</p>
+<p class="text-xs text-text-secondary">Robot RBT-001 has completed its scheduled route.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col bg-container rounded-lg border border-border-color p-4 gap-4 flex-1">
+<h3 class="text-text-primary font-bold text-lg">Recent Activity</h3>
+<div class="flex-1 overflow-y-auto pr-2">
+<ul class="flex flex-col gap-4">
+<li class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-base">route</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Route Started - RBT-004</p>
+<p class="text-xs text-text-secondary">2 mins ago</p>
+</div>
+</li>
+<li class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-base">delete</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Bin Emptied - RBT-002</p>
+<p class="text-xs text-text-secondary">5 mins ago</p>
+</div>
+</li>
+<li class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 rounded-full bg-warning/10 text-warning">
+<span class="material-symbols-outlined text-base">sensors_off</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Lost Connection - RBT-006</p>
+<p class="text-xs text-text-secondary">8 mins ago</p>
+</div>
+</li>
+<li class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-base">power</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Now Charging - RBT-001</p>
+<p class="text-xs text-text-secondary">15 mins ago</p>
+</div>
+</li>
+<li class="flex items-center gap-3">
+<div class="flex items-center justify-center size-8 rounded-full bg-error/10 text-error">
+<span class="material-symbols-outlined text-base">block</span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium">Obstacle Detected - RBT-003</p>
+<p class="text-xs text-text-secondary">18 mins ago</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+
+</body></html>
