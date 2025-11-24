@@ -6,7 +6,7 @@ import threading
 import time
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Global variables
 camera = None
@@ -72,28 +72,36 @@ def generate_frames():
         ret, frame = camera.read()
         if not ret:
             print("Failed to capture frame")
-            break
+            time.sleep(0.1)
+            continue
         
         # Flip camera horizontally (mirror effect)
         frame = cv2.flip(frame, 1)
         
         # Detect plastic bottles
-        frame = detect_plastic(frame)
+        try:
+            frame = detect_plastic(frame)
+        except Exception as e:
+            print(f"Detection error: {e}")
         
         # Update current frame
         with frame_lock:
             current_frame = frame.copy()
         
         # Encode frame as JPEG
-        ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
-        if not ret:
+        try:
+            ret, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+            if not ret:
+                continue
+            
+            frame_bytes = buffer.tobytes()
+            
+            # Yield frame in MJPEG format
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+        except Exception as e:
+            print(f"Encoding error: {e}")
             continue
-        
-        frame_bytes = buffer.tobytes()
-        
-        # Yield frame in MJPEG format
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
         
         time.sleep(0.033)  # ~30 FPS
 
@@ -141,10 +149,14 @@ def video_stream():
     global is_streaming
     
     if not is_streaming:
-        return Response("Camera not started. Please start camera first.", status=400)
+        return Response("Camera not started. Please start camera first.", status=400, mimetype='text/plain')
     
     return Response(generate_frames(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+                    mimetype='multipart/x-mixed-replace; boundary=frame',
+                    headers={
+                        'Cache-Control': 'no-cache',
+                        'X-Accel-Buffering': 'no'
+                    })
 
 @app.route('/api/health', methods=['GET'])
 def health():

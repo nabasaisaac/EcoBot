@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { Sidebar } from "../components/Sidebar";
 import {
   Play,
@@ -14,10 +15,94 @@ import {
   Bot,
 } from "lucide-react";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
 export const ManualControlPage = () => {
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    // Cleanup on unmount
+    return () => {
+      stopCamera();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const startCamera = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Start camera on backend
+      const response = await fetch(`${API_URL}/api/camera/start`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.status === "success") {
+        setIsStreaming(true);
+
+        // Set video source to stream endpoint
+        if (videoRef.current) {
+          videoRef.current.src = `${API_URL}/api/camera/stream?t=${Date.now()}`;
+        }
+      } else {
+        setError(data.message || "Failed to start camera");
+        setIsStreaming(false);
+      }
+    } catch (err) {
+      console.error("Error starting camera:", err);
+      setError(
+        "Failed to connect to camera. Make sure the backend is running."
+      );
+      setIsStreaming(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const stopCamera = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/camera/stop`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        setIsStreaming(false);
+        if (videoRef.current) {
+          videoRef.current.src = "";
+        }
+      }
+    } catch (err) {
+      console.error("Error stopping camera:", err);
+    }
+  };
+
+  const handleStart = () => {
+    if (!isStreaming) {
+      startCamera();
+    }
+  };
+
+  const handleStop = () => {
+    if (isStreaming) {
+      stopCamera();
+    }
+  };
+
   return (
     <div
-      className="relative flex min-h-screen w-full"
+      className="relative flex w-full min-h-screen"
       style={{ backgroundColor: "#f0f2f5", fontFamily: "Inter, sans-serif" }}
     >
       <Sidebar variant="manual-control" />
@@ -39,9 +124,9 @@ export const ManualControlPage = () => {
               </p>
             </div>
           </header>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 flex flex-col gap-2">
-              <div className="flex justify-between items-center">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+            <div className="flex flex-col gap-2 lg:col-span-2">
+              <div className="flex items-center justify-between">
                 <p
                   className="text-sm font-medium leading-normal"
                   style={{ color: "#6b7280" }}
@@ -52,35 +137,60 @@ export const ManualControlPage = () => {
                   className="text-sm font-normal leading-normal"
                   style={{ color: "#6b7280" }}
                 >
-                  Latency: 50ms
+                  {isStreaming ? "Streaming..." : "Stopped"}
                 </p>
               </div>
-              <div
-                className="relative flex items-center justify-center bg-gray-900 bg-cover bg-center aspect-video rounded-xl overflow-hidden"
-                style={{
-                  backgroundImage:
-                    'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBRLwONZTijW7IeTzW5teV4W0w4H1PM5TBXQ14jrqn302xpwCUeeM4T1GyiQ3dEW0b8zQeNW_oE7yhn5oT-AM0Ix8s3d7bh0ZTqp3dhV0dH3FvKYhhZpu5nWIZKQlNL0-W6B0I0cDcjX5Ibjgh2RczG5hTevRhc-WRFj08Y1vNlS0IIkiwzfav46GI_k-PsDUlcjed_WUv_NQIYQlt3x_wPBve72lxZl6lYdJDF2Z9SsSWqidX1uQlP5DsKe-c3L3wSJYYZXaJn4HE")',
-                }}
-              >
-                <button className="flex shrink-0 items-center justify-center rounded-full size-16 bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 transition-colors">
-                  <Play size={40} fill="#ffffff" />
-                </button>
+              <div className="relative flex items-center justify-center overflow-hidden bg-gray-900 aspect-video rounded-xl">
+                {isStreaming ? (
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="object-cover w-full h-full"
+                    style={{ backgroundColor: "#000000" }}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center w-full h-full">
+                    {error ? (
+                      <div className="p-4 text-center">
+                        <p className="mb-2 text-sm text-red-400">{error}</p>
+                        <p className="text-xs text-gray-400">
+                          Make sure Flask API is running on port 5000
+                        </p>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={handleStart}
+                        disabled={isLoading}
+                        className="flex items-center justify-center text-white transition-colors rounded-full shrink-0 size-16 bg-black/50 backdrop-blur-sm hover:bg-black/70 disabled:opacity-50"
+                      >
+                        <Play size={40} fill="#ffffff" />
+                      </button>
+                    )}
+                  </div>
+                )}
+                {isLoading && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                    <div className="text-sm text-white">Starting camera...</div>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex flex-col gap-6">
               <div
-                className="bg-white p-6 rounded-xl border"
+                className="p-6 bg-white border rounded-xl"
                 style={{ borderColor: "#e5e7eb" }}
               >
                 <h2
-                  className="text-xl font-semibold leading-tight mb-6"
+                  className="mb-6 text-xl font-semibold leading-tight"
                   style={{ color: "#111827" }}
                 >
                   Controls
                 </h2>
-                <div className="flex justify-center items-center mb-6">
+                <div className="flex items-center justify-center mb-6">
                   <div
-                    className="relative w-48 h-48 rounded-full flex items-center justify-center border"
+                    className="relative flex items-center justify-center w-48 h-48 border rounded-full"
                     style={{
                       backgroundColor: "#f0f2f5",
                       borderColor: "#e5e7eb",
@@ -90,61 +200,65 @@ export const ManualControlPage = () => {
                       className="absolute w-full h-full"
                       style={{ color: "#9ca3af" }}
                     >
-                      <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 p-2">
+                      <div className="absolute left-0 p-2 -translate-x-1/2 -translate-y-1/2 top-1/2">
                         <ArrowLeft size={24} />
                       </div>
-                      <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 p-2">
+                      <div className="absolute right-0 p-2 translate-x-1/2 -translate-y-1/2 top-1/2">
                         <ArrowRight size={24} />
                       </div>
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 p-2">
+                      <div className="absolute top-0 p-2 -translate-x-1/2 -translate-y-1/2 left-1/2">
                         <ArrowUp size={24} />
                       </div>
-                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 p-2">
+                      <div className="absolute bottom-0 p-2 -translate-x-1/2 translate-y-1/2 left-1/2">
                         <ArrowDown size={24} />
                       </div>
                     </div>
                     <div
-                      className="w-24 h-24 rounded-full cursor-grab active:cursor-grabbing shadow-lg"
+                      className="w-24 h-24 rounded-full shadow-lg cursor-grab active:cursor-grabbing"
                       style={{ backgroundColor: "#17563a" }}
                     ></div>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <button
-                    className="col-span-1 text-white font-semibold py-3 px-4 rounded-md flex items-center justify-center gap-2 hover:opacity-90 transition-colors"
+                    onClick={handleStart}
+                    disabled={isStreaming || isLoading}
+                    className="flex items-center justify-center col-span-1 gap-2 px-4 py-3 font-semibold text-white transition-colors rounded-md hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{ backgroundColor: "#17563a" }}
                   >
                     <Play size={20} /> Start
                   </button>
                   <button
-                    className="col-span-1 font-semibold py-3 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-gray-300 transition-colors"
+                    onClick={handleStop}
+                    disabled={!isStreaming}
+                    className="flex items-center justify-center col-span-1 gap-2 px-4 py-3 font-semibold transition-colors rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{ backgroundColor: "#e5e7eb", color: "#111827" }}
                   >
                     <Pause size={20} /> Stop
                   </button>
                   <button
-                    className="col-span-2 py-3 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-gray-300 transition-colors font-medium"
+                    className="flex items-center justify-center col-span-2 gap-2 px-4 py-3 font-medium transition-colors rounded-md hover:bg-gray-300"
                     style={{ backgroundColor: "#e5e7eb", color: "#111827" }}
                   >
                     <Recycle size={20} /> Collect Rubbish
                   </button>
-                  <button className="col-span-2 bg-red-600 text-white font-bold py-3 px-4 rounded-md flex items-center justify-center gap-2 hover:bg-red-700 transition-colors">
+                  <button className="flex items-center justify-center col-span-2 gap-2 px-4 py-3 font-bold text-white transition-colors bg-red-600 rounded-md hover:bg-red-700">
                     <AlertTriangle size={20} /> EMERGENCY STOP
                   </button>
                 </div>
               </div>
               <div
-                className="bg-white p-6 rounded-xl border"
+                className="p-6 bg-white border rounded-xl"
                 style={{ borderColor: "#e5e7eb" }}
               >
                 <h2
-                  className="text-xl font-semibold leading-tight mb-4"
+                  className="mb-4 text-xl font-semibold leading-tight"
                   style={{ color: "#111827" }}
                 >
                   Live Status
                 </h2>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <div
                       className="flex items-center gap-3"
                       style={{ color: "#6b7280" }}
@@ -153,13 +267,13 @@ export const ManualControlPage = () => {
                       <p className="text-sm">Battery Level</p>
                     </div>
                     <p
-                      className="font-semibold text-sm"
+                      className="text-sm font-semibold"
                       style={{ color: "#111827" }}
                     >
                       85%
                     </p>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <div
                       className="flex items-center gap-3"
                       style={{ color: "#6b7280" }}
@@ -168,13 +282,13 @@ export const ManualControlPage = () => {
                       <p className="text-sm">Signal Strength</p>
                     </div>
                     <p
-                      className="font-semibold text-sm"
+                      className="text-sm font-semibold"
                       style={{ color: "#111827" }}
                     >
-                      Excellent
+                      {isStreaming ? "Excellent" : "Disconnected"}
                     </p>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <div
                       className="flex items-center gap-3"
                       style={{ color: "#6b7280" }}
@@ -183,13 +297,13 @@ export const ManualControlPage = () => {
                       <p className="text-sm">Motor Status</p>
                     </div>
                     <p
-                      className="font-medium text-sm"
+                      className="text-sm font-medium"
                       style={{ color: "#111827" }}
                     >
-                      Idle
+                      {isStreaming ? "Active" : "Idle"}
                     </p>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center justify-between">
                     <div
                       className="flex items-center gap-3"
                       style={{ color: "#6b7280" }}
@@ -198,7 +312,7 @@ export const ManualControlPage = () => {
                       <p className="text-sm">Current Mode</p>
                     </div>
                     <p
-                      className="font-medium text-sm"
+                      className="text-sm font-medium"
                       style={{ color: "#17563a" }}
                     >
                       Manual Control
