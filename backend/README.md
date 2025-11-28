@@ -64,3 +64,6 @@ npm run dev
 - Video stream is in MJPEG format for browser compatibility
 - Make sure your webcam is connected and accessible
 
+
+
+
