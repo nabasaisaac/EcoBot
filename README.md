@@ -1,10 +1,10 @@
 # Ecobot 🤖
 
-An intelligent robot control system for detecting and managing plastic bottles using computer vision and real-time monitoring.
+An intelligent robot control system for detecting and managing  using computer vision and real-time monitoring.
 
 ## 🌟 Features
 
-- **Real-time Object Detection**: Uses YOLOv8 to detect plastic bottles in real-time via webcam
+- **Real-time Object Detection**: Uses YOLOv8 to detect trash in real-time via webcam
 - **Live Monitoring**: Stream video feed with object detection overlays
 - **Manual Control**: Direct robot control interface with directional controls
 - **Admin Dashboard**: Comprehensive monitoring and management interface
