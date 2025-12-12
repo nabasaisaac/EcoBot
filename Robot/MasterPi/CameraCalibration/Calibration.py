@@ -29,3 +29,38 @@ for fname in images:
         print('Not find object points:', fname)
 
 cv2.destroyAllWindows()
+
+
+
+# Compute camera intrinsics/extrinsics
+ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)
+print('mtx', mtx)
+print('dist', dist)
+
+# Reprojection error
+mean_error = 0
+for i in range(len(objpoints)):
+    imgpoints2, _ = cv2.projectPoints(objpoints[i], rvecs[i], tvecs[i], mtx, dist)
+    error = cv2.norm(imgpoints[i],imgpoints2, cv2.NORM_L2)/len(imgpoints2)
+    mean_error += error
+
+print ("total error: ", mean_error/len(objpoints))
+
+# Save calibration parameters
+np.savez(calibration_param_path, dist_array = dist, mtx_array = mtx, fmt="%d", delimiter=" ")
+print('save successful')
+
+# Load one image and preview undistortion result
+img = cv2.imread(save_path + '10.jpg')
+h, w = img.shape[:2]
+newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
+
+# undistort
+mapx,mapy = cv2.initUndistortRectifyMap(mtx,dist,None,newcameramtx,(w,h),5)
+dst = cv2.remap(img,mapx,mapy,cv2.INTER_LINEAR)
+
+cv2.imshow('calibration', dst)
+cv2.imshow('original', img)
+key = cv2.waitKey(0)
+if key != -1:
+    cv2.destroyAllWindows()
