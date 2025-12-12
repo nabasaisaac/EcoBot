@@ -83,3 +83,59 @@ class ArmIK:
 #         setPWMServosPulse(movetime, 4, 3,servos[0], 4,servos[1], 5,servos[2], 6,servos[3])
 
         return movetime
+
+
+
+    
+
+    def setPitchRange(self, coordinate_data, alpha1, alpha2, da = 1):
+        # Given coordinate_data and a pitch range (alpha1..alpha2),
+        # search for a valid solution within the range.
+        # Returns False if no solution, otherwise (servo pulses, pitch angle).
+        # Coordinate unit: cm. Example: (0, 5, 10)
+        # da: pitch step size for the search.
+        x, y, z = coordinate_data
+        if alpha1 >= alpha2:
+            da = -da
+        for alpha in np.arange(alpha1, alpha2, da):# iterate to solve
+            result = ik.getRotationAngle((x, y, z), alpha)
+            if result:
+                theta3, theta4, theta5, theta6 = result['theta3'], result['theta4'], result['theta5'], result['theta6']               
+                servos = self.transformAngelAdaptArm(theta3, theta4, theta5, theta6)
+                if servos != False:
+                    return servos, alpha
+
+        return False
+
+    def setPitchRangeMoving(self, coordinate_data, alpha, alpha1, alpha2, movetime = None):
+        # Given coordinate_data, desired pitch alpha, and a pitch search range (alpha1..alpha2),
+        # find the closest valid solution and move the arm there.
+        # Returns False if no solution, otherwise (servo pulses, pitch angle, move time ms).
+        # Coordinate unit: cm. Example: (0, 5, 10)
+        # movetime: optional; if omitted it is computed automatically.
+        x, y, z = coordinate_data
+        result1 = self.setPitchRange((x, y, z), alpha, alpha1)
+        result2 = self.setPitchRange((x, y, z), alpha, alpha2)
+        if result1 != False:
+            data = result1
+            if result2 != False:
+                if abs(result2[1] - alpha) < abs(result1[1] - alpha):
+                    data = result2
+        else:
+            if result2 != False:
+                data = result2
+            else:
+                return False
+        servos, alpha = data[0], data[1]
+        movetime = self.servosMove((servos["servo3"], servos["servo4"], servos["servo5"], servos["servo6"]), movetime)
+        return servos, alpha, movetime
+ 
+if __name__ == "__main__":
+    AK = ArmIK()
+    #setPWMServoPulse(1, 1450, 1500)
+    #AK.setPitchRangeMoving((-5,0,2), -90,-90, 90, 1200)
+#     print(ik.getLinkLength())
+    print(AK.setPitchRangeMoving((0,6,18),0,-90, 90))
+    time.sleep(2)
+    #print(AK.setPitchRangeMoving((-4.8, 15, 1.5), 0, -90, 0, 2000))
+    #AK.drawMoveRange2D(-10, 10, 0.2, 10, 30, 0.2, 2.5, -90, 90, 1)
