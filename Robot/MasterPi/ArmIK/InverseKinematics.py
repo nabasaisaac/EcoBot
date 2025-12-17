@@ -30,3 +30,22 @@ class IK:
         elif self.arm_type == 'arm':
             self.l4 = 10.00  # servo-4 to gripper tip (cm, when gripper fully closed)
 
+def setLinkLength(self, L1=l1, L2=l2, L3=l3, L4=l4, L5=l5, L6=l6):
+        # Update link lengths to support different arm builds.
+        self.l1 = L1
+        self.l2 = L2
+        self.l3 = L3
+        self.l4 = L4
+        self.l5 = L5
+        self.l6 = L6
+        if self.arm_type == 'pump':
+            self.l4 = sqrt(pow(self.l5, 2) + pow(self.l6, 2))
+            self.alpha = degrees(atan(self.l6 / self.l5))
+
+    def getLinkLength(self):
+        # Return current link length configuration.
+        if self.arm_type == 'pump':
+            return {"L1":self.l1, "L2":self.l2, "L3":self.l3, "L4":self.l4, "L5":self.l5, "L6":self.l6}
+        else:
+            return {"L1":self.l1, "L2":self.l2, "L3":self.l3, "L4":self.l4}
+
