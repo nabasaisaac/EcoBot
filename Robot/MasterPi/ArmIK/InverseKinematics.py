@@ -49,3 +49,68 @@ def setLinkLength(self, L1=l1, L2=l2, L3=l3, L4=l4, L5=l5, L6=l6):
         else:
             return {"L1":self.l1, "L2":self.l2, "L3":self.l3, "L4":self.l4}
 
+
+
+def getRotationAngle(self, coordinate_data, Alpha):
+        # Given target end-effector position and pitch angle, compute joint angles.
+        # Returns False if no valid solution.
+        # coordinate_data: end-effector (x, y, z) in cm, e.g. (0, 5, 10)
+        # Alpha: pitch angle relative to horizontal, in degrees
+
+        # Geometry notes:
+        # - End-effector tip is P(X, Y, Z)
+        # - O is the origin (projection of the gimbal center onto the ground plane)
+        # - P_ is the ground projection of P
+        # - Link joints: A (l1-l2), B (l2-l3), C (l3-l4)
+        # - Angle notation: e.g., angle between AB and BC is written as ∠ABC
+        X, Y, Z = coordinate_data
+        if self.arm_type == 'pump':
+            Alpha -= self.alpha
+        # Base rotation angle
+        theta6 = degrees(atan2(Y, X))
+ 
+        P_O = sqrt(X*X + Y*Y) # distance from ground projection to origin
+        CD = self.l4 * cos(radians(Alpha))
+        PD = self.l4 * sin(radians(Alpha)) # PD sign follows Alpha sign
+        AF = P_O - CD
+        CF = Z - self.l1 - PD
+        AC = sqrt(pow(AF, 2) + pow(CF, 2))
+        if round(CF, 4) < -self.l1:
+            logger.debug('Height below zero, CF(%s) < -l1(%s)', CF, -self.l1)
+            return False
+        if self.l2 + self.l3 < round(AC, 4): # triangle inequality fails
+            logger.debug('Invalid linkage geometry, l2(%s) + l3(%s) < AC(%s)', self.l2, self.l3, AC)
+            return False
+
+        # Solve theta4
+        cos_ABC = round((pow(self.l2, 2) + pow(self.l3, 2) - pow(AC, 2))/(2*self.l2*self.l3), 4) # cosine law
+        if abs(cos_ABC) > 1:
+            logger.debug('Invalid linkage geometry, abs(cos_ABC(%s)) > 1', cos_ABC)
+            return False
+        ABC = acos(cos_ABC) # radians
+        theta4 = 180.0 - degrees(ABC)
+
+        # Solve theta5
+        CAF = acos(AF / AC)
+        cos_BAC = round((pow(AC, 2) + pow(self.l2, 2) - pow(self.l3, 2))/(2*self.l2*AC), 4) # cosine law
+        if abs(cos_BAC) > 1:
+            logger.debug('Invalid linkage geometry, abs(cos_BAC(%s)) > 1', cos_BAC)
+            return False
+        if CF < 0:
+            zf_flag = -1
+        else:
+            zf_flag = 1
+        theta5 = degrees(CAF * zf_flag + acos(cos_BAC))
+
+        # Solve theta3
+        theta3 = Alpha - theta5 + theta4
+        if self.arm_type == 'pump':
+            theta3 += self.alpha
+
+        return {"theta3":theta3, "theta4":theta4, "theta5":theta5, "theta6":theta6} # solution angles
+            
+if __name__ == '__main__':
+    ik = IK('arm')
+    # ik.setLinkLength(L1=ik.l1 + 1.30, L4=ik.l4)
+    print('Link lengths:', ik.getLinkLength())
+    #print(ik.getRotationAngle((0, ik.l4, ik.l1 + ik.l2 + ik.l3), 0))
