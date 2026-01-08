@@ -76,3 +76,17 @@ def getMaskROI(frame, roi, size):
     black_img[y_min:y_max, x_min:x_max] = frame[y_min:y_max, x_min:x_max]
     
     return black_img
+
+ Compute the block center coordinate.
+# Inputs: rect from cv2.minAreaRect, ROI bounds, image size, block side length (cm).
+def getCenter(rect, roi, size, square_length):
+    x_min, x_max, y_min, y_max = roi
+    # Choose the vertex closest to the image center as a reference for estimating the true center.
+    if rect[0][0] >= size[0]/2:
+        x = x_max 
+    else:
+        x = x_min
+    if rect[0][1] >= size[1]/2:
+        y = y_max
+    else:
+        y = y_min
