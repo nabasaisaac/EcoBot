@@ -52,3 +52,27 @@ def getROI(box):
     y_max = max(box[0, 1], box[1, 1], box[2, 1], box[3, 1])
 
     return (x_min, x_max, y_min, y_max)
+
+# Mask everything outside ROI (set to black).
+# Inputs: frame, ROI bounds, frame size.
+def getMaskROI(frame, roi, size):
+    x_min, x_max, y_min, y_max = roi
+    x_min -= 10
+    x_max += 10
+    y_min -= 10
+    y_max += 10
+
+    if x_min < 0:
+        x_min = 0
+    if x_max > size[0]:
+        x_max = size[0]
+    if y_min < 0:
+        y_min = 0
+    if y_max > size[1]:
+        y_max = size[1]
+
+    black_img = np.zeros([size[1], size[0]], dtype=np.uint8)
+    black_img = cv2.cvtColor(black_img, cv2.COLOR_GRAY2RGB)
+    black_img[y_min:y_max, x_min:x_max] = frame[y_min:y_max, x_min:x_max]
+    
+    return black_img
