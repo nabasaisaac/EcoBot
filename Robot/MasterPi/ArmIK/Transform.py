@@ -77,7 +77,7 @@ def getMaskROI(frame, roi, size):
     
     return black_img
 
- Compute the block center coordinate.
+# Compute the block center coordinate.
 # Inputs: rect from cv2.minAreaRect, ROI bounds, image size, block side length (cm).
 def getCenter(rect, roi, size, square_length):
     x_min, x_max, y_min, y_max = roi
@@ -90,3 +90,23 @@ def getCenter(rect, roi, size, square_length):
         y = y_max
     else:
         y = y_min
+
+    # Block diagonal length (cm)
+    square_l = square_length/math.cos(math.pi/4)
+
+    # Convert diagonal length to pixels
+    square_l = world2pixel(square_l, size)
+
+    # Estimate center point based on block rotation angle
+    dx = abs(math.cos(math.radians(45 - abs(rect[2]))))
+    dy = abs(math.sin(math.radians(45 + abs(rect[2]))))
+    if rect[0][0] >= size[0] / 2:
+        x = round(x - (square_l/2) * dx, 2)
+    else:
+        x = round(x + (square_l/2) * dx, 2)
+    if rect[0][1] >= size[1] / 2:
+        y = round(y - (square_l/2) * dy, 2)
+    else:
+        y = round(y + (square_l/2) * dy, 2)
+
+    return  x, y
