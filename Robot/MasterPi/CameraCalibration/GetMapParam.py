@@ -22,7 +22,6 @@ while True:
         key = cv2.waitKey(1)
         if key == 32:
             gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-            # Find the chess board corners
             ret_, corners = cv2.findChessboardCorners(gray, (calibration_size[1], calibration_size[0]),None)
             if ret_:
                 corners2 = cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
