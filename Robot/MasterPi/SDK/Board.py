@@ -93,3 +93,151 @@ RGB.begin()
 for i in range(RGB.numPixels()):
     RGB.setPixelColor(i, PixelColor(0,0,0))
     RGB.show()
+def setMotor(index, speed):
+    if index < 1 or index > 4:
+        raise AttributeError("Invalid motor num: %d"%index)
+    if index == 2 or index == 4:
+        speed = speed
+    else:
+        speed = -speed
+    index = index - 1
+    speed = 100 if speed > 100 else speed
+    speed = -100 if speed < -100 else speed
+    reg = __MOTOR_ADDR + index
+    
+    with SMBus(__i2c) as bus:
+        try:
+            msg = i2c_msg.write(__i2c_addr, [reg, speed.to_bytes(1, 'little', signed=True)[0]])
+            bus.i2c_rdwr(msg)
+            __motor_speed[index] = speed
+            
+        except:
+            msg = i2c_msg.write(__i2c_addr, [reg, speed.to_bytes(1, 'little', signed=True)[0]])
+            bus.i2c_rdwr(msg)
+            __motor_speed[index] = speed
+           
+    return __motor_speed[index]
+
+     
+def getMotor(index):
+    if index < 1 or index > 4:
+        raise AttributeError("Invalid motor num: %d"%index)
+    index = index - 1
+    return __motor_speed[index]
+
+def setPWMServoAngle(index, angle):
+    if servo_id < 1 or servo_id > 6:
+        raise AttributeError("Invalid Servo ID: %d"%servo_id)
+    index = servo_id - 1
+    angle = 180 if angle > 180 else angle
+    angle = 0 if angle < 0 else angle
+    reg = __SERVO_ADDR + index
+    with SMBus(__i2c) as bus:
+        try:
+            msg = i2c_msg.write(__i2c_addr, [reg, angle])
+            bus.i2c_rdwr(msg)
+            __servo_angle[index] = angle
+            __servo_pulse[index] = int(((200 * angle) / 9) + 500)
+
+        except:
+            msg = i2c_msg.write(__i2c_addr, [reg, angle])
+            bus.i2c_rdwr(msg)
+            __servo_angle[index] = angle
+            __servo_pulse[index] = int(((200 * angle) / 9) + 500)
+
+    return __servo_angle[index]
+
+def setPWMServoPulse(servo_id, pulse = 1500, use_time = 1000):
+    if servo_id< 1 or servo_id > 6:
+        raise AttributeError("Invalid Servo ID: %d" %servo_id)
+    deviation_data = yaml_handle.get_yaml_data(yaml_handle.Deviation_file_path)
+    index = servo_id - 1
+    pulse += deviation_data[str(servo_id)]
+    pulse = 500 if pulse < 500 else pulse
+    pulse = 2500 if pulse > 2500 else pulse
+    use_time = 0 if use_time < 0 else use_time
+    use_time = 30000 if use_time > 30000 else use_time
+    buf = [__SERVO_ADDR_CMD, 1] + list(use_time.to_bytes(2, 'little')) + [servo_id,] + list(pulse.to_bytes(2, 'little'))
+    
+    with SMBus(__i2c) as bus:
+        try:
+            msg = i2c_msg.write(__i2c_addr, buf)
+            bus.i2c_rdwr(msg)
+            __servo_pulse[index] = pulse
+            __servo_angle[index] = int((pulse - 500) * 0.09)
+        except BaseException as e:
+            print(e)
+            msg = i2c_msg.write(__i2c_addr, buf)
+            bus.i2c_rdwr(msg)
+            __servo_pulse[index] = pulse
+            __servo_angle[index] = int((pulse - 500) * 0.09)
+
+    return __servo_pulse[index]
+
+def setPWMServosPulse(args):
+    ''' time,number, id1, pos1, id2, pos2...'''
+    deviation_data = yaml_handle.get_yaml_data(yaml_handle.Deviation_file_path)
+    arglen = len(args)
+    servos = args[2:arglen:2]
+    pulses = args[3:arglen:2]
+    use_time = args[0]
+    use_time = 0 if use_time < 0 else use_time
+    use_time = 30000 if use_time > 30000 else use_time
+    servo_number = args[1]
+    buf = [__SERVO_ADDR_CMD, servo_number] + list(use_time.to_bytes(2, 'little'))
+    dat = zip(servos, pulses)
+    for (s, p) in dat:
+        buf.append(s)
+        p += deviation_data[str(s)]
+        p = 500 if p < 500 else p
+        p = 2500 if p > 2500 else p
+        buf += list(p.to_bytes(2, 'little'))  
+        __servo_pulse[s-1] = p
+        __servo_angle[s-1] = int((p - 500) * 0.09)
+     
+    with SMBus(__i2c) as bus:
+        try:
+            msg = i2c_msg.write(__i2c_addr, buf)
+            bus.i2c_rdwr(msg)
+        except:
+            msg = i2c_msg.write(__i2c_addr, buf)
+            bus.i2c_rdwr(msg)
+
+
+def getPWMServoAngle(servo_id):
+    if servo_id < 1 or servo_id > 6:
+        raise AttributeError("Invalid Servo ID: %d"%servo_id)
+    index = servo_id - 1
+    return __servo_pulse[index]
+
+def getPWMServoPulse(servo_id):
+    if servo_id < 1 or servo_id > 6:
+        raise AttributeError("Invalid Servo ID: %d"%servo_id)
+    index = servo_id - 1
+    return __servo_pulse[index]
+    
+def getBattery():
+    ret = 0
+    with SMBus(__i2c) as bus:
+        try:
+            msg = i2c_msg.write(__i2c_addr, [__ADC_BAT_ADDR,])
+            bus.i2c_rdwr(msg)
+            read = i2c_msg.read(__i2c_addr, 2)
+            bus.i2c_rdwr(read)
+            ret = int.from_bytes(bytes(list(read)), 'little')
+            
+        except:
+            msg = i2c_msg.write(__i2c_addr, [__ADC_BAT_ADDR,])
+            bus.i2c_rdwr(msg)
+            read = i2c_msg.read(__i2c_addr, 2)
+            bus.i2c_rdwr(read)
+            ret = int.from_bytes(bytes(list(read)), 'little')
+           
+    return ret
+
+def setBuzzer(new_state):
+    GPIO.setup(31, GPIO.OUT)
+    GPIO.output(31, new_state)
+
+def setBusServoID(oldid, newid):
+    """
