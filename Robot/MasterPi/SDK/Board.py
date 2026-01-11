@@ -62,3 +62,34 @@ def runAction(actNum):
     else:
         runningAction = False
         print("Action group file not found")
+ Hiwonder Raspberry Pi expansion board SDK
+if sys.version_info.major == 2:
+    print('Please run this program with python3!')
+    sys.exit(0)
+
+__ADC_BAT_ADDR = 0
+__SERVO_ADDR   = 21
+__MOTOR_ADDR   = 31
+__SERVO_ADDR_CMD  = 40
+
+__motor_speed = [0, 0, 0, 0]
+__servo_angle = [0, 0, 0, 0, 0, 0]
+__servo_pulse = [0, 0, 0, 0, 0, 0]
+__i2c = 1
+__i2c_addr = 0x7A
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+
+__RGB_COUNT = 2
+__RGB_PIN = 12
+__RGB_FREQ_HZ = 800000
+__RGB_DMA = 10
+__RGB_BRIGHTNESS = 120
+__RGB_CHANNEL = 0
+__RGB_INVERT = False
+RGB = PixelStrip(__RGB_COUNT, __RGB_PIN, __RGB_FREQ_HZ, __RGB_DMA, __RGB_INVERT, __RGB_BRIGHTNESS, __RGB_CHANNEL)
+RGB.begin()
+for i in range(RGB.numPixels()):
+    RGB.setPixelColor(i, PixelColor(0,0,0))
+    RGB.show()
