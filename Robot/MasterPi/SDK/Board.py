@@ -9,7 +9,7 @@ sys.path.append('/home/pi/MasterPi/')
 import yaml_handle
 import HiwonderSDK.Board as Board
 
-c= False
+runningAction = False
 stopRunning = False
 
 def stop_action_group():
