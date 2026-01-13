@@ -110,3 +110,33 @@ def getCenter(rect, roi, size, square_length):
         y = round(y + (square_l/2) * dy, 2)
 
     return  x, y
+
+
+
+# Compute end-effector rotation servo value.
+# Args: arm end-effector (x, y) and object rotation angle.
+def getAngle(x, y, angle):
+    theta6 = round(math.degrees(math.atan2(abs(x), abs(y))), 1)
+    angle = abs(angle)
+    
+    if x < 0:
+        if y < 0:
+            angle1 = -(90 + theta6 - angle)
+        else:
+            angle1 = theta6 - angle
+    else:
+        if y < 0:
+            angle1 = theta6 + angle
+        else:
+            angle1 = 90 - theta6 - angle
+
+    if angle1 > 0:
+        angle2 = angle1 - 90
+    else:
+        angle2 = angle1 + 90
+
+    if abs(angle1) < abs(angle2):
+        servo_angle = int(500 + round(angle1 * 1000 / 240))
+    else:
+        servo_angle = int(500 + round(angle2 * 1000 / 240))
+    return servo_angle
