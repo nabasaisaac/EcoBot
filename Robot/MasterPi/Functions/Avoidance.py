@@ -119,3 +119,60 @@ forward = True
 old_speed = 0
 stopMotor = True
 distance_data = []
+
+def run(img):
+    global turn
+    global speed
+    global __until
+    global __isRunning
+    global HWSONAR
+    global Threshold
+    global distance_data
+    global stopMotor
+    global forward
+    global old_speed
+    
+    dist = HWSONAR.getDistance() / 10.0
+
+    distance_data.append(dist)
+    data = pd.DataFrame(distance_data)
+    data_ = data.copy()
+    u = data_.mean()  # mean
+    std = data_.std()  # standard deviation
+
+    data_c = data[np.abs(data - u) <= std]
+    distance = data_c.mean()[0]
+
+    if len(distance_data) == 5:
+        distance_data.remove(distance_data[0])
+
+    if __isRunning:   
+        if speed != old_speed:   # Only apply when speed changes
+            old_speed = speed
+            chassis.set_velocity(speed,90,0)
+            
+        if distance <= Threshold:   # Check distance threshold
+            if turn:
+                turn = False
+                forward = True
+                stopMotor = True
+                chassis.set_velocity(0,90,-0.5)
+                time.sleep(0.5)
+            
+        else:
+            if forward:
+                turn = True
+                forward = False
+                stopMotor = True
+                chassis.set_velocity(speed,90,0)
+    else:
+        if stopMotor:
+            stopMotor = False
+            chassis.set_velocity(0,0,0)  # Stop all motors
+        turn = True
+        forward = True
+        time.sleep(0.03)
+
+    # Overlay sonar distance on the video frame
+    return cv2.putText(img, "Dist:%.1fcm"%distance, (30, 480-30), cv2.FONT_HERSHEY_SIMPLEX, 1.2, TextColor, 2)
+
