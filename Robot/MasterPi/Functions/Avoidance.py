@@ -59,3 +59,63 @@ def reset():
     forward = True
     stopMotor = True
     __isRunning = False
+
+# Called once when the module is initialized
+def init():
+    print("Avoidance Init")
+    initMove()
+    reset()
+    
+__isRunning = False
+# Called when the mode starts
+def start():
+    global __isRunning
+    global stopMotor
+    global forward
+    global turn
+    
+    turn = True
+    forward = True
+    stopMotor = True
+    __isRunning = True
+    print("Avoidance Start")
+
+# Called when the mode stops
+def stop():
+    global __isRunning
+    __isRunning = False
+    chassis.set_velocity(0,0,0)
+    print("Avoidance Stop")
+
+# Called when the mode exits (cleanup)
+def exit():
+    global __isRunning
+    __isRunning = False
+    chassis.set_velocity(0,0,0)
+    HWSONAR.setPixelColor(0, Board.PixelColor(0, 0, 0))
+    HWSONAR.setPixelColor(1, Board.PixelColor(0, 0, 0))
+    print("Avoidance Exit")
+
+# Set obstacle avoidance speed
+def setSpeed(args):
+    global speed
+    speed = int(args[0])
+    return (True, ())
+ 
+# Set sonar distance threshold (cm)
+def setThreshold(args):
+    global Threshold
+    Threshold = args[0]
+    return (True, (Threshold,))
+
+# Get sonar distance threshold (cm)
+def getThreshold(args):
+    global Threshold
+    return (True, (Threshold,))
+
+
+turn = True
+forward = True
+old_speed = 0
+stopMotor = True
+distance_data = []
