@@ -176,3 +176,39 @@ def run(img):
     # Overlay sonar distance on the video frame
     return cv2.putText(img, "Dist:%.1fcm"%distance, (30, 480-30), cv2.FONT_HERSHEY_SIMPLEX, 1.2, TextColor, 2)
 
+
+
+    
+
+
+
+
+# Pre-exit handler
+def Stop(signum, frame):
+    global __isRunning
+    
+    __isRunning = False
+    print('Shutting down...')
+    chassis.set_velocity(0,0,0)  # Stop all motors
+
+if __name__ == '__main__':
+    init()
+    start()
+    HWSONAR = Sonar.Sonar()
+    signal.signal(signal.SIGINT, Stop)
+    cap = cv2.VideoCapture('http://127.0.0.1:8080?action=stream')
+    while __isRunning:
+        ret,img = cap.read()
+        if ret:
+            frame = img.copy()
+            Frame = run(frame)  
+            frame_resize = cv2.resize(Frame, (320, 240))  
+            cv2.imshow('frame', frame_resize)
+            key = cv2.waitKey(1)
+            if key == 27:
+                break
+        else:
+            time.sleep(0.01)
+    cv2.destroyAllWindows()
+    
+    
