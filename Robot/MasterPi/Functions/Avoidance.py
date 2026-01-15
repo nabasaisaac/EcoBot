@@ -176,13 +176,6 @@ def run(img):
     # Overlay sonar distance on the video frame
     return cv2.putText(img, "Dist:%.1fcm"%distance, (30, 480-30), cv2.FONT_HERSHEY_SIMPLEX, 1.2, TextColor, 2)
 
-
-
-    
-
-
-
-
 # Pre-exit handler
 def Stop(signum, frame):
     global __isRunning
