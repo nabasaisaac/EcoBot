@@ -62,7 +62,7 @@ def runAction(actNum):
     else:
         runningAction = False
         print("Action group file not found")
- Hiwonder Raspberry Pi expansion board SDK
+#  Hiwonder Raspberry Pi expansion board SDK
 if sys.version_info.major == 2:
     print('Please run this program with python3!')
     sys.exit(0)
@@ -241,3 +241,88 @@ def setBuzzer(new_state):
 
 def setBusServoID(oldid, newid):
     """
+
+
+    Configure the serial bus-servo ID (factory default is usually 1).
+
+    :param oldid: Current servo ID (often 1 from factory)
+    :param newid: New servo ID to set
+    """
+    serial_serro_wirte_cmd(oldid, LOBOT_SERVO_ID_WRITE, newid)
+
+def getBusServoID(id=None):
+    """
+    Read a serial bus-servo ID.
+
+    :param id: Optional servo ID. If None, assumes there is only one servo on the bus.
+    :return: Servo ID (or response payload)
+    """
+    
+    while True:
+        if id is None:  # Only one servo should be on the bus
+            serial_servo_read_cmd(0xfe, LOBOT_SERVO_ID_READ)
+        else:
+            serial_servo_read_cmd(id, LOBOT_SERVO_ID_READ)
+        # Read response payload
+        msg = serial_servo_get_rmsg(LOBOT_SERVO_ID_READ)
+        if msg is not None:
+            return msg
+
+def setBusServoPulse(id, pulse, use_time):
+    """
+    Move a serial bus-servo to the target position.
+
+    :param id: Servo ID
+    :param pulse: Target position (0-1000)
+    :param use_time: Movement duration in ms
+    """
+
+    pulse = 0 if pulse < 0 else pulse
+    pulse = 1000 if pulse > 1000 else pulse
+    use_time = 0 if use_time < 0 else use_time
+    use_time = 30000 if use_time > 30000 else use_time
+    serial_serro_wirte_cmd(id, LOBOT_SERVO_MOVE_TIME_WRITE, pulse, use_time)
+
+def stopBusServo(id=None):
+    '''
+    Stop a serial bus-servo.
+
+    :param id: Servo ID (optional)
+    '''
+    serial_serro_wirte_cmd(id, LOBOT_SERVO_MOVE_STOP)
+
+def setBusServoDeviation(id, d=0):
+    """
+    Adjust servo deviation (offset).
+
+    :param id: Servo ID
+    :param d: Offset/deviation value
+    """
+    serial_serro_wirte_cmd(id, LOBOT_SERVO_ANGLE_OFFSET_ADJUST, d)
+
+def saveBusServoDeviation(id):
+    """
+    Save deviation to servo (persists after power loss).
+
+    :param id: Servo ID
+    """
+    serial_serro_wirte_cmd(id, LOBOT_SERVO_ANGLE_OFFSET_WRITE)
+
+time_out = 50
+def getBusServoDeviation(id):
+    '''
+    Read saved deviation (offset) value.
+
+    :param id: Servo ID
+    '''
+    # Send deviation read command
+    count = 0
+    while True:
+        serial_servo_read_cmd(id, LOBOT_SERVO_ANGLE_OFFSET_READ)
+        # Read response
+        msg = serial_servo_get_rmsg(LOBOT_SERVO_ANGLE_OFFSET_READ)
+        count += 1
+        if msg is not None:
+            return msg
+        if count > time_out:
+            return None
