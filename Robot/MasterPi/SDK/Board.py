@@ -356,7 +356,7 @@ def getBusServoID(id=None):
 
 def setBusServoPulse(id, pulse, use_time):
     """
-    Move a serial bus-servo to the target position.
+    Mc
 
     :param id: Servo ID
     :param pulse: Target position (0-1000)
@@ -412,3 +412,58 @@ def getBusServoDeviation(id):
             return msg
         if count > time_out:
             return None
+
+
+
+
+            def getBusServoTemp(id):
+    '''
+    Read servo temperature.
+
+    :param id: Servo ID
+    :return: Temperature value
+    '''
+    while True:
+        serial_servo_read_cmd(id, LOBOT_SERVO_TEMP_READ)
+        msg = serial_servo_get_rmsg(LOBOT_SERVO_TEMP_READ)
+        if msg is not None:
+            return msg
+
+def getBusServoVin(id):
+    '''
+    Read servo voltage (VIN).
+
+    :param id: Servo ID
+    :return: Voltage value
+    '''
+    while True:
+        serial_servo_read_cmd(id, LOBOT_SERVO_VIN_READ)
+        msg = serial_servo_get_rmsg(LOBOT_SERVO_VIN_READ)
+        if msg is not None:
+            return msg
+
+def restBusServoPulse(oldid):
+    # Reset deviation and move to mid position (500)
+    serial_servo_set_deviation(oldid, 0)    # Clear deviation
+    time.sleep(0.1)
+    serial_serro_wirte_cmd(oldid, LOBOT_SERVO_MOVE_TIME_WRITE, 500, 100)    # Mid
+
+## Unload (power-off torque)
+def unloadBusServo(id):
+    serial_serro_wirte_cmd(id, LOBOT_SERVO_LOAD_OR_UNLOAD_WRITE, 0)
+
+## Read load/unload status
+def getBusServoLoadStatus(id):
+    while True:
+        serial_servo_read_cmd(id, LOBOT_SERVO_LOAD_OR_UNLOAD_READ)
+        msg = serial_servo_get_rmsg(LOBOT_SERVO_LOAD_OR_UNLOAD_READ)
+        if msg is not None:
+            return msg
+
+setBuzzer(0)
+
+# setMotor(1, 60)
+# setMotor(2, 60)
+# setMotor(3, 60)
+# setMotor(4, 60)
+
