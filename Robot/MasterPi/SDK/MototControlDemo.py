@@ -24,7 +24,6 @@ Tips:
 ----------------------------------------------------------
 ''')
 
-# Stop all motors
 def MotorStop():
     Board.setMotor(1, 0) 
     Board.setMotor(2, 0)
