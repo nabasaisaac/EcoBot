@@ -191,3 +191,24 @@ def run(img):
         cv2.putText(img, "Color: " + detect_color, (10, img.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.65, draw_color, 2) # Overlay detected color
         
         return img
+    
+if __name__ == '__main__':
+    init()
+    start()
+    cap = cv2.VideoCapture('http://127.0.0.1:8080?action=stream')
+    while True:
+        ret,img = cap.read()
+        if ret:
+            frame = img.copy()
+            Frame = run(frame)  
+            frame_resize = cv2.resize(Frame, (320, 240))
+            cv2.imshow('frame', frame_resize)
+            key = cv2.waitKey(1)
+            if key == 27:
+                break
+        else:
+            time.sleep(0.01)
+    my_camera.camera_close()
+    cv2.destroyAllWindows()
+
+    
