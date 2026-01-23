@@ -56,3 +56,45 @@ def getAreaMaxContour(contours):
 
 # Gripper "close" servo pulse (tuned for this robot)
 servo1 = 1500
+
+# Initial arm pose
+def initMove():
+    Board.setPWMServoPulse(1, servo1, 300)
+    AK.setPitchRangeMoving((0, 6, 18), 0,-90, 90, 1500)
+
+
+# Buzzer helper
+def setBuzzer(timer):
+    Board.setBuzzer(0)
+    Board.setBuzzer(1)
+    time.sleep(timer)
+    Board.setBuzzer(0)
+   
+
+# Set the controller RGB LED to match the target color.
+def set_rgb(color):
+    if color == "red":
+        Board.RGB.setPixelColor(0, Board.PixelColor(255, 0, 0))
+        Board.RGB.setPixelColor(1, Board.PixelColor(255, 0, 0))
+        Board.RGB.show()
+    elif color == "green":
+        Board.RGB.setPixelColor(0, Board.PixelColor(0, 255, 0))
+        Board.RGB.setPixelColor(1, Board.PixelColor(0, 255, 0))
+        Board.RGB.show()
+    elif color == "blue":
+        Board.RGB.setPixelColor(0, Board.PixelColor(0, 0, 255))
+        Board.RGB.setPixelColor(1, Board.PixelColor(0, 0, 255))
+        Board.RGB.show()
+    else:
+        Board.RGB.setPixelColor(0, Board.PixelColor(0, 0, 0))
+        Board.RGB.setPixelColor(1, Board.PixelColor(0, 0, 0))
+        Board.RGB.show()
+
+count = 0
+_stop = False
+color_list = []
+get_roi = False
+__isRunning = False
+detect_color = 'None'
+start_pick_up = False
+start_count_t1 = True
