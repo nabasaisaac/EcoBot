@@ -23,7 +23,7 @@ def Stop(signum, frame):
     start = False
     print('Shutting down...')
 
-# Turn off all LEDs first
+# cz
 Board.RGB.setPixelColor(0, Board.PixelColor(0, 0, 0))
 Board.RGB.setPixelColor(1, Board.PixelColor(0, 0, 0))
 Board.RGB.show()
