@@ -98,3 +98,22 @@ __isRunning = False
 detect_color = 'None'
 start_pick_up = False
 start_count_t1 = True
+
+
+# Reset runtime state variables
+def reset(): 
+    global _stop
+    global count
+    global get_roi
+    global color_list
+    global detect_color
+    global start_pick_up
+    global start_count_t1
+    
+    count = 0
+    _stop = False
+    color_list = []
+    get_roi = False
+    detect_color = 'None'
+    start_pick_up = False
+    start_count_t1 = True
