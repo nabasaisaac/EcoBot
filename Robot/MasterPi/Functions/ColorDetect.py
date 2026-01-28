@@ -149,3 +149,93 @@ def exit():
     __isRunning = False
     set_rgb('None')
     print("ColorDetect Exit")
+
+
+rect = None
+size = (640, 480)
+rotation_angle = 0
+unreachable = False
+world_X, world_Y = 0, 0
+def move():
+    global rect
+    global _stop
+    global get_roi
+    global __isRunning
+    global unreachable
+    global detect_color
+    global start_pick_up
+    global rotation_angle
+    global world_X, world_Y
+    
+
+    while True:
+        if __isRunning:
+            if detect_color != 'None' and start_pick_up:  # A color block was detected
+                
+                set_rgb(detect_color) # Match RGB LED to detected color
+                setBuzzer(0.1)     # Beep for 0.1s
+                
+                if detect_color == 'red' :  # Red detected: nod
+                    for i in range(0,3):
+                        Board.setPWMServoPulse(3, 800, 200)
+                        time.sleep(0.2)
+                        Board.setPWMServoPulse(3, 600, 200)
+                        time.sleep(0.2)
+                        if not __isRunning:
+                            continue
+
+                    AK.setPitchRangeMoving((0, 6, 18), 0,-90, 90, 500)  # Return to initial pose
+                    time.sleep(0.5)  
+                    detect_color = 'None'
+                    start_pick_up = False
+                    set_rgb(detect_color)
+                    
+                else:                      # Green/Blue detected: shake head
+                    for i in range(0,3):
+                        Board.setPWMServoPulse(6, 1300, 400)
+                        time.sleep(0.5)
+                        Board.setPWMServoPulse(6, 1700, 400)
+                        time.sleep(0.5)
+                        if not __isRunning:
+                            continue
+
+                    AK.setPitchRangeMoving((0, 6, 18), 0,-90, 90, 500)  # Return to initial pose
+                    time.sleep(0.5)
+                    detect_color = 'None'
+                    start_pick_up = False
+                    set_rgb(detect_color)
+            else:
+                time.sleep(0.01)
+        else:
+            if _stop:
+                print('ok')
+                _stop = False
+                initMove()  # Return to initial pose
+                time.sleep(1.5)               
+            time.sleep(0.01)
+
+# Background worker thread
+th = threading.Thread(target=move)
+th.setDaemon(True)
+th.start()
+
+t1 = 0
+roi = ()
+center_list = []
+last_x, last_y = 0, 0
+draw_color = range_rgb["black"]
+
+def run(img):
+    global roi
+    global rect
+    global count
+    global get_roi
+    global center_list
+    global unreachable
+    global __isRunning
+    global start_pick_up
+    global last_x, last_y
+    global rotation_angle
+    global world_X, world_Y
+    global start_count_t1, t1
+    global detect_color, draw_color, color_list
