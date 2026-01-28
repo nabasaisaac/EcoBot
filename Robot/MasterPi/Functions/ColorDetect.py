@@ -117,3 +117,35 @@ def reset():
     detect_color = 'None'
     start_pick_up = False
     start_count_t1 = True
+
+
+    # Called once when the module is initialized
+def init():
+    print("ColorDetect Init")
+    load_config()
+    initMove()
+
+# Called when the mode starts
+def start():
+    global __isRunning
+    reset()
+    __isRunning = True
+    print("ColorDetect Start")
+
+# Called when the mode stops
+def stop():
+    global _stop
+    global __isRunning
+    _stop = True
+    __isRunning = False
+    set_rgb('None')
+    print("ColorDetect Stop")
+
+# Called when the mode exits (cleanup)
+def exit():
+    global _stop
+    global __isRunning
+    _stop = True
+    __isRunning = False
+    set_rgb('None')
+    print("ColorDetect Exit")
