@@ -239,3 +239,101 @@ def run(img):
     global world_X, world_Y
     global start_count_t1, t1
     global detect_color, draw_color, color_list
+
+
+
+
+
+        
+    if not __isRunning:  # If not running, return the original image
+        return img
+    else:
+        img_copy = img.copy()
+        img_h, img_w = img.shape[:2]
+        
+        frame_resize = cv2.resize(img_copy, size, interpolation=cv2.INTER_NEAREST)
+        frame_gb = cv2.GaussianBlur(frame_resize, (3, 3), 3)
+        
+        frame_lab = cv2.cvtColor(frame_gb, cv2.COLOR_BGR2LAB)  # Convert frame to LAB color space
+
+        color_area_max = None
+        max_area = 0
+        areaMaxContour_max = 0
+        if not start_pick_up:
+            for i in lab_data:
+                if i in __target_color:
+                    frame_mask = cv2.inRange(frame_lab,
+                                                 (lab_data[i]['min'][0],
+                                                  lab_data[i]['min'][1],
+                                                  lab_data[i]['min'][2]),
+                                                 (lab_data[i]['max'][0],
+                                                  lab_data[i]['max'][1],
+                                                  lab_data[i]['max'][2]))  # Mask using LAB min/max
+                    opened = cv2.morphologyEx(frame_mask, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))  # Morph open
+                    closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))  # Morph close
+                    contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2]  # Find contours
+                    areaMaxContour, area_max = getAreaMaxContour(contours)  # Largest contour
+                    if areaMaxContour is not None:
+                        if area_max > max_area:  # Track max area across colors
+                            max_area = area_max
+                            color_area_max = i
+                            areaMaxContour_max = areaMaxContour
+            if max_area > 2500:  # A sufficiently large object was found
+                rect = cv2.minAreaRect(areaMaxContour_max)
+                box = np.int0(cv2.boxPoints(rect))
+                
+                cv2.drawContours(img, [box], -1, range_rgb[color_area_max], 2)
+                if not start_pick_up:
+                    if color_area_max == 'red':  # red is dominant
+                        color = 1
+                    elif color_area_max == 'green':  # green is dominant
+                        color = 2
+                    elif color_area_max == 'blue':  # blue is dominant
+                        color = 3
+                    else:
+                        color = 0
+                    color_list.append(color)
+                    if len(color_list) == 3:  # Multiple samples for stability
+                        # Take average value
+                        color = int(round(np.mean(np.array(color_list))))
+                        color_list = []
+                        start_pick_up = True
+                        if color == 1:
+                            detect_color = 'red'
+                            draw_color = range_rgb["red"]
+                        elif color == 2:
+                            detect_color = 'green'
+                            draw_color = range_rgb["green"]
+                        elif color == 3:
+                            detect_color = 'blue'
+                            draw_color = range_rgb["blue"]
+                        else:
+                            detect_color = 'None'
+                            draw_color = range_rgb["black"]
+            else:
+                if not start_pick_up:
+                    draw_color = (0, 0, 0)
+                    detect_color = "None"   
+        
+        cv2.putText(img, "Color: " + detect_color, (10, img.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.65, draw_color, 2) # Overlay detected color
+        
+        return img
+
+if __name__ == '__main__':
+    init()
+    start()
+    cap = cv2.VideoCapture('http://127.0.0.1:8080?action=stream')
+    while True:
+        ret,img = cap.read()
+        if ret:
+            frame = img.copy()
+            Frame = run(frame)  
+            frame_resize = cv2.resize(Frame, (320, 240))
+            cv2.imshow('frame', frame_resize)
+            key = cv2.waitKey(1)
+            if key == 27:
+                break
+        else:
+            time.sleep(0.01)
+    cv2.destroyAllWindows()
+
