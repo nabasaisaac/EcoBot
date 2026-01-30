@@ -787,3 +787,228 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
                         
         except BaseException as e:
             print(e)
+
+    def listActions(self, path):
+        if not os.path.exists(path):
+            os.mkdir(path)
+        pathlist = os.listdir(path)
+        actList = []
+
+        for f in pathlist:
+            if f[0] == '.':
+                pass
+            else:
+                if f[-4:] == '.d6a':
+                    f.replace('-', '')
+                    if f:
+                        actList.append(f[0:-4])
+                else:
+                    pass
+        return actList
+    
+    def reflash_action(self):
+        actList = self.listActions(self.actdir)
+        actList.sort()
+
+        if len(actList) != 0:
+            self.comboBox_action.clear()
+            for i in range(0, len(actList)):
+                self.comboBox_action.addItem(actList[i])
+        else:
+            self.comboBox_action.clear()
+    
+    # Action group control button click handler
+    def button_controlaction_clicked(self, name):
+        if name == 'delectSingle':
+            if str(self.comboBox_action.currentText()) != "":
+                os.remove(self.actdir + str(self.comboBox_action.currentText()) + ".d6a")            
+                self.reflash_action()
+        if name == 'allDelect':
+            result = self.message_delect('This will delete all action groups. Continue?')
+            if result == 0:                              
+                actList = self.listActions(self.actdir)
+                for d in actList:
+                    os.remove(self.actdir + d + '.d6a')
+            else:
+                pass
+            self.reflash_action()
+        if name == 'runAction':   # Run action group
+            runActionGroup(self.comboBox_action.currentText())
+            
+        if name == 'stopAction':   # Stop running
+            stopActionGroup()
+            
+        if name == 'reflash':
+            self.reflash_action()
+            
+        if name == 'quit':
+            self.camera_ui = True
+            self.camera_ui_break = True
+            try:
+                self.cap.release()
+            except:
+                pass
+            sys.exit()
+
+    ################################################################################################
+    # Find the contour with the largest area
+    def getAreaMaxContour(self,contours) :
+            contour_area_temp = 0
+            contour_area_max = 0
+            area_max_contour = None;
+
+            for c in contours :
+                contour_area_temp = math.fabs(cv2.contourArea(c)) # compute area
+                if contour_area_temp > contour_area_max : # update max area
+                    contour_area_max = contour_area_temp
+                    if contour_area_temp > 10: # ignore tiny contours (noise)
+                        area_max_contour = c
+
+            return area_max_contour # returns None if nothing valid
+    
+    def show_image(self):
+        if self.camera_opened:
+            ret, orgframe = self.cap.read()
+            if ret:
+                orgFrame = cv2.resize(orgframe, (400, 300))
+                orgFrame = cv2.GaussianBlur(orgFrame, (3, 3), 3)
+                frame_lab = cv2.cvtColor(orgFrame, cv2.COLOR_BGR2LAB)
+                mask = cv2.inRange(frame_lab,
+                                   (self.current_lab_data[self.color]['min'][0],
+                                    self.current_lab_data[self.color]['min'][1],
+                                    self.current_lab_data[self.color]['min'][2]),
+                                   (self.current_lab_data[self.color]['max'][0],
+                                    self.current_lab_data[self.color]['max'][1],
+                                    self.current_lab_data[self.color]['max'][2]))# mask using LAB min/max
+                opend = cv2.morphologyEx(mask, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_RECT, (self.kernel_open, self.kernel_open)))
+                closed = cv2.morphologyEx(opend, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_RECT, (self.kernel_close, self.kernel_close)))
+                showImage = QImage(closed.data, closed.shape[1], closed.shape[0], QImage.Format_Indexed8)
+                temp_pixmap = QPixmap.fromImage(showImage)
+                frame_rgb = cv2.cvtColor(orgFrame, cv2.COLOR_BGR2RGB)
+                showframe = QImage(frame_rgb.data, frame_rgb.shape[1], frame_rgb.shape[0], QImage.Format_RGB888)
+                t_p = QPixmap.fromImage(showframe)
+                
+                self.label_process.setPixmap(temp_pixmap)
+                self.label_orign.setPixmap(t_p)
+
+    def horizontalSlider_labvaluechange(self, name):
+        if name == 'lmin': 
+            self.current_lab_data[self.color]['min'][0] = self.horizontalSlider_LMin.value()
+            self.label_LMin.setNum(self.current_lab_data[self.color]['min'][0])
+        if name == 'amin':
+            self.current_lab_data[self.color]['min'][1] = self.horizontalSlider_AMin.value()
+            self.label_AMin.setNum(self.current_lab_data[self.color]['min'][1])
+        if name == 'bmin':
+            self.current_lab_data[self.color]['min'][2] = self.horizontalSlider_BMin.value()
+            self.label_BMin.setNum(self.current_lab_data[self.color]['min'][2])
+        if name == 'lmax':
+            self.current_lab_data[self.color]['max'][0] = self.horizontalSlider_LMax.value()
+            self.label_LMax.setNum(self.current_lab_data[self.color]['max'][0])
+        if name == 'amax':
+            self.current_lab_data[self.color]['max'][1] = self.horizontalSlider_AMax.value()
+            self.label_AMax.setNum(self.current_lab_data[self.color]['max'][1])
+        if name == 'bmax':
+            self.current_lab_data[self.color]['max'][2] = self.horizontalSlider_BMax.value()
+            self.label_BMax.setNum(self.current_lab_data[self.color]['max'][2])
+
+    def get_yaml_data(self, yaml_file):
+        file = open(yaml_file, 'r', encoding='utf-8')
+        file_data = file.read()
+        file.close()
+        data = yaml.load(file_data, Loader=yaml.FullLoader)
+        return data
+
+    def save_yaml_data(self, data, yaml_file):
+        file = open(yaml_file, 'w', encoding='utf-8')
+        yaml.dump(data, file)
+        file.close()
+
+    def createConfig(self, c=False):
+        if not os.path.isfile(self.path + self.lab_file):          
+            data = {'red': {'max': [255, 255, 255], 'min': [0, 150, 130]},
+                    'green': {'max': [255, 110, 255], 'min': [47, 0, 135]},
+                    'blue': {'max': [255, 136, 120], 'min': [0, 0, 0]},
+                    'black': {'max': [89, 255, 255], 'min': [0, 0, 0]},
+                    'white': {'max': [255, 255, 255], 'min': [193, 0, 0]}}
+            self.save_yaml_data(data, self.path + self.lab_file)
+            self.current_lab_data = data
+            
+            self.color_list = ['red', 'green', 'blue', 'black', 'white']
+            self.comboBox_color.addItems(self.color_list)
+            self.comboBox_color.currentIndexChanged.connect(self.selectionchange)       
+            self.selectionchange() 
+        else:
+            try:
+                self.current_lab_data = self.get_yaml_data(self.path + self.lab_file)
+                self.color_list = self.current_lab_data.keys()
+                self.comboBox_color.addItems(self.color_list)
+                self.comboBox_color.currentIndexChanged.connect(self.selectionchange)       
+                self.selectionchange() 
+            except:
+                if self.chinese:
+                    self.message_From('Failed to read saved color file: invalid format!')
+                else:
+                    self.message_From('Format error')
+                          
+    def getColorValue(self, color):
+        if color != '':
+            self.current_lab_data = self.get_yaml_data(self.path + self.lab_file)
+            if color in self.current_lab_data:
+                self.horizontalSlider_LMin.setValue(self.current_lab_data[color]['min'][0])
+                self.horizontalSlider_AMin.setValue(self.current_lab_data[color]['min'][1])
+                self.horizontalSlider_BMin.setValue(self.current_lab_data[color]['min'][2])
+                self.horizontalSlider_LMax.setValue(self.current_lab_data[color]['max'][0])
+                self.horizontalSlider_AMax.setValue(self.current_lab_data[color]['max'][1])
+                self.horizontalSlider_BMax.setValue(self.current_lab_data[color]['max'][2])
+            else:
+                self.current_lab_data[color] = {'max': [255, 255, 255], 'min': [0, 0, 0]}
+                self.save_yaml_data(self.current_lab_data, self.path + self.lab_file)
+
+                self.horizontalSlider_LMin.setValue(0)
+                self.horizontalSlider_AMin.setValue(0)
+                self.horizontalSlider_BMin.setValue(0)
+                self.horizontalSlider_LMax.setValue(255)
+                self.horizontalSlider_AMax.setValue(255)
+                self.horizontalSlider_BMax.setValue(255)
+
+    def selectionchange(self):
+        self.color = self.comboBox_color.currentText()      
+        self.getColorValue(self.color)
+        
+    def on_pushButton_action_clicked(self, buttonName):
+        if buttonName == 'labWrite':
+            try:              
+                self.save_yaml_data(self.current_lab_data, self.path + self.lab_file)
+            except Exception as e:
+                if self.chinese:
+                    self.message_From('Save failed!')
+                else:
+                    self.message_From('Failed！')
+                return
+            if self.chinese:
+                self.message_From('Save successful!')
+            else:
+                self.message_From('success！')
+        elif buttonName == 'connect':
+#             self.cap = cv2.VideoCapture(-1)
+            self.cap = cv2.VideoCapture('http://127.0.0.1:8080?action=stream')
+            if not self.cap.isOpened():
+                self.label_process.setText('Can\'t find camera')
+                self.label_orign.setText('Can\'t find camera')
+                self.label_process.setAlignment(Qt.AlignCenter|Qt.AlignVCenter)
+                self.label_orign.setAlignment(Qt.AlignCenter|Qt.AlignVCenter)
+            else:
+                self.camera_opened = True
+                self._timer.start(20)
+        elif buttonName == 'disconnect':
+            self.camera_opened = False
+            self._timer.stop()
+            self.label_process.setText(' ')
+            self.label_orign.setText(' ')           
+            self.cap.release()
+
+if __name__ == "__main__":  
+    app = QtWidgets.QApplication(sys.argv)
+    myshow = MainWindow()
+    myshow.show()
+    sys.exit(app.exec_())
