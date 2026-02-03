@@ -102,3 +102,68 @@ __isRunning = False
 detect_color = 'None'
 start_pick_up = False
 start_count_t1 = True
+
+
+
+# Reset runtime state variables
+def reset():
+    global _stop
+    global count
+    global get_roi
+    global color_list
+    global detect_color
+    global start_pick_up
+    global __target_color
+    global start_count_t1
+
+    count = 0
+    _stop = False
+    color_list = []
+    get_roi = False
+    __target_color = ()
+    detect_color = 'None'
+    start_pick_up = False
+    start_count_t1 = True
+
+# Called once when the module is initialized
+def init():
+    print("ColorSorting Init")
+    # Turn off sonar LEDs by default
+    HWSONAR.setRGBMode(0)
+    HWSONAR.setPixelColor(0, Board.PixelColor(0,0,0))
+    HWSONAR.setPixelColor(1, Board.PixelColor(0,0,0))    
+    HWSONAR.show()
+    load_config()
+    initMove()
+
+# Called when the mode starts
+def start():
+    global __isRunning
+    reset()
+    __isRunning = True
+    print("ColorSorting Start")
+
+# Called when the mode stops
+def stop():
+    global _stop
+    global __isRunning
+    _stop = True
+    __isRunning = False
+    set_rgb('None')
+    print("ColorSorting Stop")
+
+# Called when the mode exits (cleanup)
+def exit():
+    global _stop
+    global __isRunning
+    _stop = True
+    set_rgb('None')
+    __isRunning = False
+    print("ColorSorting Exit")
+
+
+rect = None
+size = (640, 480)
+rotation_angle = 0
+unreachable = False 
+world_X, world_Y = 0, 0
