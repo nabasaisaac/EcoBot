@@ -167,3 +167,222 @@ size = (640, 480)
 rotation_angle = 0
 unreachable = False 
 world_X, world_Y = 0, 0
+
+def move():
+    global rect
+    global _stop
+    global get_roi
+    global unreachable
+    global __isRunning
+    global detect_color
+    global start_pick_up
+    global rotation_angle
+    global world_X, world_Y
+    
+    # Drop-off coordinates for each detected color (demo mode)
+    coordinate = {
+        'red':   (-15, 14, 2),
+        'green': (-18, 9,  3),
+        'blue':  (-18, 0, 2),
+        'capture': (0, 16.5, 2)
+    }
+    
+    while True:
+        if __isRunning:        
+            if detect_color != 'None' and start_pick_up:  # If a block is detected, start pickup
+                
+                set_rgb(detect_color) # Match RGB LED to detected color
+                setBuzzer(0.1)     # Beep for 0.1s
+                
+                AK.setPitchRangeMoving((0, 6, 18), 0,-90, 90, 1500) # Lift the arm
+                time.sleep(1.5)
+                if not __isRunning:  # Stop if the mode is no longer running
+                    continue
+                Board.setPWMServoPulse(1, 2000, 500) # Open gripper
+                time.sleep(1.5)
+                if not __isRunning:
+                    continue
+                Board.setPWMServoPulse(1, 1500, 500) # Close gripper
+                time.sleep(1.5)
+                if not __isRunning:
+                    continue
+                if detect_color == 'red':       # Rotate base depending on detected color
+                    Board.setPWMServoPulse(6, 1900, 500)
+                    time.sleep(0.5)
+                elif detect_color == 'green':
+                    Board.setPWMServoPulse(6, 2100, 800)
+                    time.sleep(0.8)
+                elif detect_color == 'blue':
+                    Board.setPWMServoPulse(6, 2500, 1500)
+                    time.sleep(1.5)
+                if not __isRunning:
+                    continue
+                result = AK.setPitchRangeMoving((coordinate[detect_color][0], coordinate[detect_color][1], 8), -90, -90, 0) # Move above drop-off point
+                if result == False:
+                    unreachable = True
+                else:
+                    unreachable = False
+                    time.sleep(result[2]/1000) # Sleep for motion duration
+                if not __isRunning:
+                    continue
+                AK.setPitchRangeMoving((coordinate[detect_color]), -90, -90, 0, 500)  # Move to final drop-off
+                time.sleep(0.5)
+                if not __isRunning:
+                    continue
+                Board.setPWMServoPulse(1, 1800, 500) # Open gripper (release)
+                time.sleep(0.5)
+                if not __isRunning:
+                    continue
+                AK.setPitchRangeMoving((coordinate[detect_color][0], coordinate[detect_color][1], 8), -90, -90, 0, 800) # Lift back up
+                time.sleep(0.8)
+                if not __isRunning:
+                    continue
+                Board.setPWMServosPulse([1200, 4, 1,1500, 3,515, 4,2170, 5,945]) # Reset arm pose
+                time.sleep(1.2)
+                if detect_color == 'red':
+                    Board.setPWMServoPulse(6, 1500, 500)
+                    time.sleep(0.5)
+                elif detect_color == 'green':
+                    Board.setPWMServoPulse(6, 1500, 800)
+                    time.sleep(0.8)
+                elif detect_color == 'blue':
+                    Board.setPWMServoPulse(6, 1500, 1500)
+                    time.sleep(1.5)
+                AK.setPitchRangeMoving((0, 8, 10), -90, -90, 0, 1000)
+                time.sleep(1)
+                
+                detect_color = 'None'
+                get_roi = False
+                start_pick_up = False
+                set_rgb(detect_color)
+            else:
+                time.sleep(0.01)                
+        else:
+            if _stop:
+                _stop = False
+                initMove()
+            time.sleep(0.01)
+          
+# Background worker thread
+th = threading.Thread(target=move)
+th.setDaemon(True)
+th.start()    
+
+t1 = 0
+roi = ()
+center_list = []
+last_x, last_y = 0, 0
+draw_color = range_rgb["black"]
+length = 50
+w_start = 200
+h_start = 200
+def run(img):
+    global roi
+    global rect
+    global count
+    global get_roi
+    global center_list
+    global unreachable
+    global __isRunning
+    global start_pick_up
+    global rotation_angle
+    global last_x, last_y
+    global world_X, world_Y
+    global start_count_t1, t1
+    global detect_color, draw_color, color_list
+    
+    img_copy = img.copy()
+    img_h, img_w = img.shape[:2]   
+
+    if not __isRunning: # If not running, return the original image
+        return img
+    
+    frame_resize = cv2.resize(img_copy, size, interpolation=cv2.INTER_NEAREST)
+    frame_gb = cv2.GaussianBlur(frame_resize, (3, 3), 3)     
+    frame_lab = cv2.cvtColor(frame_gb, cv2.COLOR_BGR2LAB)  # Convert frame to LAB color space
+
+    color_area_max = None
+    max_area = 0
+    areaMaxContour_max = 0
+    
+    if not start_pick_up:
+        for i in lab_data:
+            if i in __target_color:
+                frame_mask = cv2.inRange(frame_lab,
+                                             (lab_data[i]['min'][0],
+                                              lab_data[i]['min'][1],
+                                              lab_data[i]['min'][2]),
+                                             (lab_data[i]['max'][0],
+                                              lab_data[i]['max'][1],
+                                              lab_data[i]['max'][2]))  # Mask using LAB min/max
+                opened = cv2.morphologyEx(frame_mask, cv2.MORPH_OPEN, np.ones((3, 3),np.uint8))  # Morph open
+                closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((3, 3),np.uint8)) # Morph close
+                closed[:, 0:100] = 0
+                contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2]  # Find contours
+                areaMaxContour, area_max = getAreaMaxContour(contours)  # Largest contour
+                if areaMaxContour is not None:
+                    if area_max > max_area: # Track max area across colors
+                        max_area = area_max
+                        color_area_max = i
+                        areaMaxContour_max = areaMaxContour
+        if max_area > 2500:  # A sufficiently large object was found
+            rect = cv2.minAreaRect(areaMaxContour_max)
+            box = np.int0(cv2.boxPoints(rect))
+            cv2.drawContours(img, [box], -1, range_rgb[color_area_max], 2)
+            
+            if not start_pick_up:
+                if color_area_max == 'red':  # red is dominant
+                    color = 1
+                elif color_area_max == 'green':  # green is dominant
+                    color = 2
+                elif color_area_max == 'blue':  # blue is dominant
+                    color = 3
+                else:
+                    color = 0
+                color_list.append(color)
+
+                if len(color_list) == 3:  # Multiple samples for stability
+                    # Take average value
+                    color = int(round(np.mean(np.array(color_list))))
+                    color_list = []
+                    if color:
+                        start_pick_up = True
+                        if color == 1:
+                            detect_color = 'red'
+                            draw_color = range_rgb["red"]
+                        elif color == 2:
+                            detect_color = 'green'
+                            draw_color = range_rgb["green"]
+                        elif color == 3:
+                            detect_color = 'blue'
+                            draw_color = range_rgb["blue"]
+                    else:
+                        start_pick_up = False
+                        detect_color = 'None'
+                        draw_color = range_rgb["black"]
+        else:
+            if not start_pick_up:
+                draw_color = (0, 0, 0)
+                detect_color = "None"
+
+    cv2.putText(img, "Color: " + detect_color, (10, img.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.65, draw_color, 2)
+    return img
+
+if __name__ == '__main__':
+    init()
+    start()
+    __target_color = ('red', 'green', 'blue')
+    cap = cv2.VideoCapture('http://127.0.0.1:8080?action=stream')
+    while True:
+        ret,img = cap.read()
+        if ret:
+            frame = img.copy()
+            Frame = run(frame)  
+            frame_resize = cv2.resize(Frame, (320, 240))
+            cv2.imshow('frame', frame_resize)
+            key = cv2.waitKey(1)
+            if key == 27:
+                break
+        else:
+            time.sleep(0.01)
+    cv2.destroyAllWindows()
