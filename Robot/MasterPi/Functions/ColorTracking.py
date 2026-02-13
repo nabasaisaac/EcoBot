@@ -111,3 +111,85 @@ def set_rgb(color):
         Board.RGB.setPixelColor(0, Board.PixelColor(0, 0, 0))
         Board.RGB.setPixelColor(1, Board.PixelColor(0, 0, 0))
         Board.RGB.show()
+
+
+_stop = False
+__isRunning = False
+detect_color = 'None'
+start_pick_up = False
+# Reset runtime state variables
+def reset():
+    global _stop
+    global __isRunning
+    global detect_color
+    global start_pick_up
+    global __target_color
+    global x_dis,y_dis
+    global enableWheel
+    
+    x_dis = 1500
+    y_dis = 860
+    x_pid.clear()
+    y_pid.clear()
+    go_pid.clear()
+    about_pid.clear()
+    _stop = False
+    enableWheel = False
+    __target_color = ()
+    detect_color = 'None'
+    start_pick_up = False
+
+# Called once when the module is initialized
+def init():
+    print("ColorTracking Init")
+    load_config()
+    reset()
+    initMove()
+
+# Called when the mode starts
+def start():
+    global __isRunning
+    reset()
+    __isRunning = True
+    print("ColorTracking Start")
+
+# Called when the mode stops
+def stop():
+    global _stop 
+    global __isRunning
+    _stop = True
+    reset()
+    initMove()
+    MotorStop()
+    __isRunning = False
+    set_rgb('None')
+    print("ColorTracking Stop")
+
+# Called when the mode exits (cleanup)
+def exit():
+    global _stop
+    global __isRunning
+    _stop = True
+    reset()
+    initMove()
+    MotorStop()
+    __isRunning = False
+    set_rgb('None')
+    print("ColorTracking Exit")
+
+# Enable/disable chassis following (drive base follows the tracked color)
+enableWheel = False
+def setWheel(Wheel = 0,):
+    global enableWheel
+    if Wheel :
+        enableWheel = True
+        Board.setPWMServoPulse(1, 1500, 800)
+        AK.setPitchRangeMoving((0, 7, 12), -50, -90, 0, 1500)
+    else:
+        enableWheel = False
+        MotorStop()
+        initMove()
+    return (True, ())
+
+rect = None
+size = (640, 480)
