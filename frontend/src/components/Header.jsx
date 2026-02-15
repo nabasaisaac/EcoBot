@@ -1,39 +1,111 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Recycle, Menu, Search, Bell, Settings } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
 
 export const Header = ({ variant = 'default' }) => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   if (variant === 'home') {
     return (
-      <header className="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 px-4 sm:px-10 py-3 bg-white/80 backdrop-blur-sm">
-        <div className="flex items-center gap-4" style={{ color: '#1a202c' }}>
-          <div className="size-6" style={{ color: '#17563a' }}>
-            <Recycle size={32} />
-          </div>
-          <h2 className="text-lg font-bold leading-tight tracking-[-0.015em]" style={{ color: '#1a202c', fontFamily: 'Space Grotesk, sans-serif' }}>
-            Autonomous Waste Collector
-          </h2>
-        </div>
-        <nav className="hidden md:flex flex-1 justify-end gap-8">
-          <div className="flex items-center gap-9">
-            <Link to="/about" className="text-sm font-medium leading-normal transition-colors hover:opacity-80" style={{ color: '#4a5568' }} onMouseEnter={(e) => e.target.style.color = '#17563a'} onMouseLeave={(e) => e.target.style.color = '#4a5568'}>
-              About Robot
-            </Link>
-            <a href="#" className="text-sm font-medium leading-normal transition-colors hover:opacity-80" style={{ color: '#4a5568' }} onMouseEnter={(e) => e.target.style.color = '#17563a'} onMouseLeave={(e) => e.target.style.color = '#4a5568'}>
-              Research
-            </a>
-            <a href="#" className="text-sm font-medium leading-normal transition-colors hover:opacity-80" style={{ color: '#4a5568' }} onMouseEnter={(e) => e.target.style.color = '#17563a'} onMouseLeave={(e) => e.target.style.color = '#4a5568'}>
-              Contact
-            </a>
-          </div>
-          <Link to="/login" className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity" style={{ backgroundColor: '#17563a' }}>
-            <span className="truncate">Login</span>
+      <header className="sticky top-0 z-50 border-b border-solid border-gray-200 bg-white/80 backdrop-blur-sm">
+        <div className="flex items-center justify-between whitespace-nowrap px-4 sm:px-10 py-3">
+          <Link
+            to="/"
+            className="flex items-center gap-4 hover:opacity-90 transition-opacity"
+            style={{ color: '#1a202c' }}
+            onClick={() => setMobileOpen(false)}
+          >
+            <div className="size-6" style={{ color: '#17563a' }}>
+              <Recycle size={32} />
+            </div>
+            <h2
+              className="text-lg font-bold leading-tight tracking-[-0.015em]"
+              style={{ color: '#1a202c', fontFamily: 'Space Grotesk, sans-serif' }}
+            >
+              Autonomous Waste Collector
+            </h2>
           </Link>
-        </nav>
-        <div className="md:hidden">
-          <button style={{ color: '#1a202c' }}>
-            <Menu size={24} />
-          </button>
+          <nav className="hidden md:flex flex-1 justify-end gap-8">
+            <div className="flex items-center gap-9">
+              <Link
+                to="/about"
+                className="text-sm font-medium leading-normal transition-colors hover:opacity-80"
+                style={{ color: '#4a5568' }}
+                onMouseEnter={(e) => (e.target.style.color = '#17563a')}
+                onMouseLeave={(e) => (e.target.style.color = '#4a5568')}
+              >
+                About
+              </Link>
+              <Link
+                to="/research"
+                className="text-sm font-medium leading-normal transition-colors hover:opacity-80"
+                style={{ color: '#4a5568' }}
+                onMouseEnter={(e) => (e.target.style.color = '#17563a')}
+                onMouseLeave={(e) => (e.target.style.color = '#4a5568')}
+              >
+                Research
+              </Link>
+            </div>
+            <Link
+              to="/login"
+              className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: '#17563a' }}
+            >
+              <span className="truncate">Login</span>
+            </Link>
+          </nav>
+          <div className="md:hidden">
+            <button
+              type="button"
+              aria-label="Toggle navigation"
+              onClick={() => setMobileOpen((v) => !v)}
+              className="inline-flex items-center justify-center rounded-md p-1.5 focus:outline-none focus:ring-2"
+              style={{ color: '#1a202c', '--tw-ring-color': '#17563a' }}
+            >
+              <Menu size={24} />
+            </button>
+          </div>
         </div>
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.nav
+              key="mobile-nav"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              className="md:hidden border-t border-gray-200 bg-white px-4 pb-4 pt-2"
+            >
+              <div className="flex flex-col gap-2">
+                <Link
+                  to="/about"
+                  className="py-2 text-sm font-medium"
+                  style={{ color: '#1f2933' }}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  About
+                </Link>
+                <Link
+                  to="/research"
+                  className="py-2 text-sm font-medium"
+                  style={{ color: '#1f2933' }}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Research
+                </Link>
+                <Link
+                  to="/login"
+                  className="mt-2 inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm font-bold text-white"
+                  style={{ backgroundColor: '#17563a' }}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Login
+                </Link>
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </header>
     );
   }
@@ -45,7 +117,7 @@ export const Header = ({ variant = 'default' }) => {
           Admin Dashboard
         </h2>
         <div className="flex flex-1 justify-end gap-4">
-          <label className="flex flex-col w-full !h-10 max-w-sm">
+          <label className="flex flex-col w-full h-10 max-w-sm">
             <div className="flex w-full flex-1 items-stretch rounded-lg h-full">
               <div className="flex border items-center justify-center pl-4 rounded-l-md border-r-0" style={{ color: '#64748b', borderColor: '#e2e8f0', backgroundColor: '#f8fafc' }}>
                 <Search size={20} />

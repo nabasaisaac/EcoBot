@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Eye, Navigation, Network } from "lucide-react";
+import robotImage from "../assets/robot_image.jpeg";
 
 export const HomePage = () => {
   return (
@@ -19,8 +20,7 @@ export const HomePage = () => {
                   <div
                     className="flex min-h-[520px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 rounded-xl items-start justify-end p-6 @[480px]:p-12"
                     style={{
-                      backgroundImage:
-                        'linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.5) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCazERXvxxZJd_HqnE8azZa05nez0eylys69TcHLFMaK1coRZG1-lk9ElUrdqdTzcWhE7NKZOdYP_Dt2N91rP2WVxOlD5oVO0E3UczwDN3cRPemuzJQyvcPdU-UcGYAAj747GWVrRc0V5wmMn0s_ZtDsqJ3IVOZ0wByY3Y2D8zWNowmgaAlhdtLSHeMFlIxLHuczWkngQyOSkBuwjf9SZTd57PnzA112zjoOW_To5IjbGpyeRP2T9_HEbZJiOPCxa2Qwhfrm1KBqcc")',
+                      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.5) 100%), url(${robotImage})`,
                     }}
                   >
                     <div className="flex flex-col gap-2 text-left max-w-2xl">

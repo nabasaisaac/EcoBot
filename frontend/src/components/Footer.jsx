@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Recycle } from 'lucide-react';
 
 export const Footer = ({ variant = 'default' }) => {
@@ -9,12 +10,12 @@ export const Footer = ({ variant = 'default' }) => {
             <div className="size-5" style={{ color: '#17563a' }}>
               <Recycle size={24} />
             </div>
-            <p className="text-sm" style={{ color: '#4a5568' }}>© 2024 Autonomous Waste Collector. All Rights Reserved.</p>
+            <p className="text-sm" style={{ color: '#4a5568' }}>© 2026 Autonomous Waste Collector. All Rights Reserved.</p>
           </div>
           <div className="flex items-center gap-6">
-            <a href="#" className="transition-colors hover:opacity-80" style={{ color: '#4a5568' }} onMouseEnter={(e) => e.target.style.color = '#1a202c'} onMouseLeave={(e) => e.target.style.color = '#4a5568'}>About</a>
-            <a href="#" className="transition-colors hover:opacity-80" style={{ color: '#4a5568' }} onMouseEnter={(e) => e.target.style.color = '#1a202c'} onMouseLeave={(e) => e.target.style.color = '#4a5568'}>Research</a>
-            <a href="#" className="transition-colors hover:opacity-80" style={{ color: '#4a5568' }} onMouseEnter={(e) => e.target.style.color = '#1a202c'} onMouseLeave={(e) => e.target.style.color = '#4a5568'}>Contact</a>
+            <Link to="/about" className="transition-colors hover:opacity-80" style={{ color: '#4a5568' }} onMouseEnter={(e) => e.target.style.color = '#1a202c'} onMouseLeave={(e) => e.target.style.color = '#4a5568'}>About</Link>
+            <Link to="/research" className="transition-colors hover:opacity-80" style={{ color: '#4a5568' }} onMouseEnter={(e) => e.target.style.color = '#1a202c'} onMouseLeave={(e) => e.target.style.color = '#4a5568'}>Research</Link>
+            <Link to="/contact" className="transition-colors hover:opacity-80" style={{ color: '#4a5568' }} onMouseEnter={(e) => e.target.style.color = '#1a202c'} onMouseLeave={(e) => e.target.style.color = '#4a5568'}>Contact</Link>
           </div>
         </div>
       </footer>
@@ -23,7 +24,7 @@ export const Footer = ({ variant = 'default' }) => {
 
   return (
     <footer className="mt-10 border-t px-4 py-6 text-center" style={{ borderColor: '#e2e8f0', color: '#64748b' }}>
-      <p className="text-sm">© 2024 EcoBot Inc. All rights reserved.</p>
+      <p className="text-sm">© 2026 EcoBot Inc. All rights reserved.</p>
       <div className="flex justify-center gap-4 mt-2">
         <a href="#" className="text-xs transition-colors hover:opacity-80" style={{ color: '#64748b' }} onMouseEnter={(e) => e.target.style.color = '#17563a'} onMouseLeave={(e) => e.target.style.color = '#64748b'}>Support</a>
         <a href="#" className="text-xs transition-colors hover:opacity-80" style={{ color: '#64748b' }} onMouseEnter={(e) => e.target.style.color = '#17563a'} onMouseLeave={(e) => e.target.style.color = '#64748b'}>Documentation</a>

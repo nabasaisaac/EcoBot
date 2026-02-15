@@ -1,391 +1,202 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Sidebar } from "../components/Sidebar";
-import {
-  Play,
-  ArrowLeft,
-  ArrowRight,
-  ArrowUp,
-  ArrowDown,
-  Pause,
-  Recycle,
-  AlertTriangle,
-  Battery,
-  Signal,
-  RefreshCw,
-  Bot,
-} from "lucide-react";
+import { Play, Pause, Battery, Radio, Activity } from "lucide-react";
 
-// Try Node.js API first, fallback to Flask directly
 const NODE_API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 const FLASK_API_URL = "http://localhost:5000";
+const STATUS_POLL_MS = 1500;
 
-// Function to determine which API to use
 const getApiUrl = async () => {
-  // Helper function to fetch with timeout
-  const fetchWithTimeout = (url, timeout = 2000) => {
-    return Promise.race([
+  const fetchWithTimeout = (url, timeout = 2000) =>
+    Promise.race([
       fetch(url, { method: "GET" }),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Timeout")), timeout)
-      ),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), timeout)),
     ]);
-  };
-
   try {
-    // Try Node.js API first
-    const response = await fetchWithTimeout(`${NODE_API_URL}/api/health`);
-    if (response.ok) {
-      return NODE_API_URL;
-    }
+    const r = await fetchWithTimeout(`${NODE_API_URL}/api/health`);
+    if (r.ok) return NODE_API_URL;
   } catch {
-    console.log("Node.js API not available, trying Flask directly");
-  }
-
-  // Fallback to Flask
-  try {
-    const response = await fetchWithTimeout(`${FLASK_API_URL}/api/health`);
-    if (response.ok) {
+    try {
+      const r = await fetchWithTimeout(`${FLASK_API_URL}/api/health`);
+      if (r.ok) return FLASK_API_URL;
+    } catch {
       return FLASK_API_URL;
     }
-  } catch {
-    console.log("Flask API not available");
   }
-
-  // Default to Flask since it's running
   return FLASK_API_URL;
 };
 
 export const ManualControlPage = () => {
-  const [isStreaming, setIsStreaming] = useState(false);
+  const [isActive, setIsActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [apiUrl, setApiUrl] = useState(NODE_API_URL);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [streamUrl, setStreamUrl] = useState(null);
+  const [liveStatus, setLiveStatus] = useState(null);
+
+  const fetchStatus = useCallback(async () => {
+    const base = apiUrl || FLASK_API_URL;
+    try {
+      const r = await fetch(`${base}/api/status`);
+      if (r.ok) {
+        const data = await r.json();
+        setLiveStatus(data);
+      }
+    } catch {
+      setLiveStatus(null);
+    }
+  }, [apiUrl]);
 
   useEffect(() => {
-    // Detect which API is available
-    getApiUrl().then((url) => {
-      setApiUrl(url);
-    });
-
-    // Cleanup on unmount
+    getApiUrl().then(setApiUrl);
     return () => {
-      stopCamera();
+      stopControl();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const startCamera = async () => {
+  useEffect(() => {
+    if (!isActive) {
+      setLiveStatus(null);
+      return;
+    }
+    fetchStatus();
+    const id = setInterval(fetchStatus, STATUS_POLL_MS);
+    return () => clearInterval(id);
+  }, [isActive, fetchStatus]);
+
+  const startControl = async () => {
     setIsLoading(true);
     setError(null);
-
+    const base = apiUrl || (await getApiUrl());
+    setApiUrl(base);
     try {
-      // Try to detect API if not set
-      const currentApiUrl = apiUrl || (await getApiUrl());
-      setApiUrl(currentApiUrl);
-
-      // Start camera on backend
-      const response = await fetch(`${currentApiUrl}/api/camera/start`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data.status === "success" || data.status === "already_streaming") {
-        // Wait a bit for camera to be ready, then set stream URL
-        setTimeout(() => {
-          const url = `${currentApiUrl}/api/camera/stream?t=${Date.now()}`;
-          console.log("Setting stream URL to:", url);
-          setStreamUrl(url);
-          setIsStreaming(true);
-        }, 1000); // Increased delay to ensure camera is ready
+      const r = await fetch(`${base}/api/control/start`, { method: "POST", headers: { "Content-Type": "application/json" } });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.message || `HTTP ${r.status}`);
+      if (data.status === "success" || data.status === "already_started") {
+        setStreamUrl(`${base}/api/camera/stream?t=${Date.now()}`);
+        setIsActive(true);
       } else {
-        setError(data.message || "Failed to start camera");
-        setIsStreaming(false);
+        throw new Error(data.message || "Failed to start");
       }
     } catch (err) {
-      console.error("Error starting camera:", err);
-      setError(
-        `Failed to connect to camera. Make sure Flask API is running on port 5000. Error: ${err.message}`
-      );
-      setIsStreaming(false);
+      setError(err.message || "Failed to start manual control. Ensure backend is running and robot/Xbox are connected.");
+      setIsActive(false);
+      setStreamUrl(null);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const stopCamera = async () => {
+  const stopControl = async () => {
+    const base = apiUrl || FLASK_API_URL;
     try {
-      const currentApiUrl = apiUrl || FLASK_API_URL;
-      const response = await fetch(`${currentApiUrl}/api/camera/stop`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        setIsStreaming(false);
-        setStreamUrl(null);
-      }
+      await fetch(`${base}/api/control/stop`, { method: "POST", headers: { "Content-Type": "application/json" } });
+      setIsActive(false);
+      setStreamUrl(null);
     } catch (err) {
-      console.error("Error stopping camera:", err);
-    }
-  };
-
-  const handleStart = () => {
-    if (!isStreaming) {
-      startCamera();
-    }
-  };
-
-  const handleStop = () => {
-    if (isStreaming) {
-      stopCamera();
+      console.error("Stop error:", err);
     }
   };
 
   return (
-    <div
-      className="relative flex w-full min-h-screen"
-      style={{ backgroundColor: "#f0f2f5", fontFamily: "Inter, sans-serif" }}
-    >
-      <Sidebar
-        variant="manual-control"
-        isOpen={sidebarOpen}
-        onToggle={() => setSidebarOpen(!sidebarOpen)}
-      />
+    <div className="relative flex w-full min-h-screen" style={{ backgroundColor: "#f0f2f5", fontFamily: "Inter, sans-serif" }}>
+      <Sidebar variant="manual-control" isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
       <main className="flex-1 p-4 mt-16 lg:p-8 lg:mt-0">
         <div className="flex flex-col gap-8">
-          <header className="flex flex-wrap justify-between gap-3">
-            <div className="flex flex-col gap-1">
-              <p
-                className="text-3xl font-bold leading-tight"
-                style={{ color: "#111827" }}
-              >
-                Manual Robot Control
-              </p>
-              <p
-                className="text-base font-normal leading-normal"
-                style={{ color: "#6b7280" }}
-              >
-                Real-time remote operation of ARC-007
-              </p>
-            </div>
+          <header>
+            <h1 className="text-3xl font-bold" style={{ color: "#111827" }}>Manual Robot Control</h1>
+            <p className="text-base text-gray-600">Drive with Xbox. Live feed shows trash detection and bounding boxes.</p>
           </header>
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            <div className="flex flex-col gap-2 lg:col-span-2">
-              <div className="flex items-center justify-between">
-                <p
-                  className="text-sm font-medium leading-normal"
-                  style={{ color: "#6b7280" }}
-                >
-                  Live Camera Feed
-                </p>
-                <p
-                  className="text-sm font-normal leading-normal"
-                  style={{ color: "#6b7280" }}
-                >
-                  {isStreaming ? "Streaming..." : "Stopped"}
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-gray-600">Live feed (trash + bounding boxes)</span>
+              <span className="text-sm font-medium" style={{ color: isActive ? "#17563a" : "#6b7280" }}>
+                {isActive ? "Active — use Xbox to control" : "Stopped"}
+              </span>
+            </div>
+            <div className="relative flex items-center justify-center overflow-hidden bg-gray-900 aspect-video rounded-xl">
+              {isActive && streamUrl ? (
+                <img
+                  src={streamUrl}
+                  alt="Live camera with trash detection"
+                  className="object-contain w-full h-full"
+                  style={{ backgroundColor: "#000" }}
+                  onError={() => setError("Stream failed. Is manual control running?")}
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center w-full h-full text-gray-400">
+                  {error && <p className="mb-2 text-sm text-red-400">{error}</p>}
+                  <p className="text-sm">Click Start to begin manual control and see the live stream.</p>
+                  <button
+                    onClick={startControl}
+                    disabled={isLoading}
+                    className="mt-4 flex items-center justify-center rounded-full size-16 bg-white/10 hover:bg-white/20 disabled:opacity-50 transition-colors"
+                  >
+                    <Play size={36} className="text-white" />
+                  </button>
+                </div>
+              )}
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                  <span className="text-white">Starting manual control...</span>
+                </div>
+              )}
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={startControl}
+                disabled={isActive || isLoading}
+                className="flex items-center gap-2 px-5 py-3 font-semibold text-white rounded-lg bg-[#17563a] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Play size={20} /> Start
+              </button>
+              <button
+                onClick={stopControl}
+                disabled={!isActive}
+                className="flex items-center gap-2 px-5 py-3 font-semibold rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Pause size={20} /> Stop
+              </button>
+            </div>
+
+            {/* Live status cards: battery, sonar (cm), action (like autonomous_trash_picker) */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="p-4 rounded-xl border bg-white flex items-center justify-between" style={{ borderColor: "#e5e7eb" }}>
+                <div className="flex items-center gap-3" style={{ color: "#6b7280" }}>
+                  <Battery size={22} style={{ color: "#17563a" }} />
+                  <p className="text-sm font-medium">Battery</p>
+                </div>
+                <p className="text-sm font-semibold" style={{ color: "#111827" }}>
+                  {liveStatus?.battery_percent != null ? `${liveStatus.battery_percent}%` : liveStatus?.battery_voltage != null ? `${liveStatus.battery_voltage} V` : "—"}
                 </p>
               </div>
-              <div className="relative flex items-center justify-center overflow-hidden bg-gray-900 aspect-video rounded-xl">
-                {isStreaming && streamUrl ? (
-                  <img
-                    src={streamUrl}
-                    alt="Live camera feed"
-                    className="object-cover w-full h-full"
-                    style={{ backgroundColor: "#000000" }}
-                    onError={(e) => {
-                      console.error("Image stream error:", e);
-                      setError(
-                        "Failed to load video stream. Check if camera is accessible."
-                      );
-                    }}
-                    onLoad={() => {
-                      console.log("Stream image loaded");
-                      setError(null);
-                    }}
-                  />
-                ) : (
-                  <div className="flex flex-col items-center justify-center w-full h-full">
-                    {error ? (
-                      <div className="p-4 text-center">
-                        <p className="mb-2 text-sm text-red-400">{error}</p>
-                        <p className="text-xs text-gray-400">
-                          Make sure Flask API is running on port 5000
-                        </p>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={handleStart}
-                        disabled={isLoading}
-                        className="flex items-center justify-center text-white transition-colors rounded-full shrink-0 size-16 bg-black/50 backdrop-blur-sm hover:bg-black/70 disabled:opacity-50"
-                      >
-                        <Play size={40} fill="#ffffff" />
-                      </button>
-                    )}
-                  </div>
-                )}
-                {isLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                    <div className="text-sm text-white">Starting camera...</div>
-                  </div>
-                )}
+              <div className="p-4 rounded-xl border bg-white flex items-center justify-between" style={{ borderColor: "#e5e7eb" }}>
+                <div className="flex items-center gap-3" style={{ color: "#6b7280" }}>
+                  <Radio size={22} style={{ color: "#17563a" }} />
+                  <p className="text-sm font-medium">Sonar (cm)</p>
+                </div>
+                <p className="text-sm font-semibold" style={{ color: "#111827" }}>
+                  {liveStatus?.sonar_cm != null ? `${liveStatus.sonar_cm} cm` : "—"}
+                </p>
+              </div>
+              <div className="p-4 rounded-xl border bg-white flex items-center justify-between" style={{ borderColor: "#e5e7eb" }}>
+                <div className="flex items-center gap-3" style={{ color: "#6b7280" }}>
+                  <Activity size={22} style={{ color: "#17563a" }} />
+                  <p className="text-sm font-medium">Action</p>
+                </div>
+                <p className="text-sm font-semibold truncate max-w-[140px]" style={{ color: "#111827" }} title={liveStatus?.action || ""}>
+                  {liveStatus?.action ?? "—"}
+                </p>
               </div>
             </div>
-            <div className="flex flex-col gap-6">
-              <div
-                className="p-6 bg-white border rounded-xl"
-                style={{ borderColor: "#e5e7eb" }}
-              >
-                <h2
-                  className="mb-6 text-xl font-semibold leading-tight"
-                  style={{ color: "#111827" }}
-                >
-                  Controls
-                </h2>
-                <div className="flex items-center justify-center mb-6">
-                  <div
-                    className="relative flex items-center justify-center w-48 h-48 border rounded-full"
-                    style={{
-                      backgroundColor: "#f0f2f5",
-                      borderColor: "#e5e7eb",
-                    }}
-                  >
-                    <div
-                      className="absolute w-full h-full"
-                      style={{ color: "#9ca3af" }}
-                    >
-                      <div className="absolute left-0 p-2 -translate-x-1/2 -translate-y-1/2 top-1/2">
-                        <ArrowLeft size={24} />
-                      </div>
-                      <div className="absolute right-0 p-2 translate-x-1/2 -translate-y-1/2 top-1/2">
-                        <ArrowRight size={24} />
-                      </div>
-                      <div className="absolute top-0 p-2 -translate-x-1/2 -translate-y-1/2 left-1/2">
-                        <ArrowUp size={24} />
-                      </div>
-                      <div className="absolute bottom-0 p-2 -translate-x-1/2 translate-y-1/2 left-1/2">
-                        <ArrowDown size={24} />
-                      </div>
-                    </div>
-                    <div
-                      className="w-24 h-24 rounded-full shadow-lg cursor-grab active:cursor-grabbing"
-                      style={{ backgroundColor: "#17563a" }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={handleStart}
-                    disabled={isStreaming || isLoading}
-                    className="flex items-center justify-center col-span-1 gap-2 px-4 py-3 font-semibold text-white transition-colors rounded-md hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{ backgroundColor: "#17563a" }}
-                  >
-                    <Play size={20} /> Start
-                  </button>
-                  <button
-                    onClick={handleStop}
-                    disabled={!isStreaming}
-                    className="flex items-center justify-center col-span-1 gap-2 px-4 py-3 font-semibold transition-colors rounded-md hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{ backgroundColor: "#e5e7eb", color: "#111827" }}
-                  >
-                    <Pause size={20} /> Stop
-                  </button>
-                  <button
-                    className="flex items-center justify-center col-span-2 gap-2 px-4 py-3 font-medium transition-colors rounded-md hover:bg-gray-300"
-                    style={{ backgroundColor: "#e5e7eb", color: "#111827" }}
-                  >
-                    <Recycle size={20} /> Collect Rubbish
-                  </button>
-                  <button className="flex items-center justify-center col-span-2 gap-2 px-4 py-3 font-bold text-white transition-colors bg-red-600 rounded-md hover:bg-red-700">
-                    <AlertTriangle size={20} /> EMERGENCY STOP
-                  </button>
-                </div>
+            {isActive && liveStatus && (
+              <div className="flex flex-wrap gap-2 text-sm text-gray-500">
+                <span>Trash detected: {liveStatus.trash_count ?? 0}</span>
+                <span>Mode: {liveStatus.mode ?? "—"}</span>
               </div>
-              <div
-                className="p-6 bg-white border rounded-xl"
-                style={{ borderColor: "#e5e7eb" }}
-              >
-                <h2
-                  className="mb-4 text-xl font-semibold leading-tight"
-                  style={{ color: "#111827" }}
-                >
-                  Live Status
-                </h2>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div
-                      className="flex items-center gap-3"
-                      style={{ color: "#6b7280" }}
-                    >
-                      <Battery size={20} style={{ color: "#17563a" }} />
-                      <p className="text-sm">Battery Level</p>
-                    </div>
-                    <p
-                      className="text-sm font-semibold"
-                      style={{ color: "#111827" }}
-                    >
-                      85%
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div
-                      className="flex items-center gap-3"
-                      style={{ color: "#6b7280" }}
-                    >
-                      <Signal size={20} style={{ color: "#17563a" }} />
-                      <p className="text-sm">Signal Strength</p>
-                    </div>
-                    <p
-                      className="text-sm font-semibold"
-                      style={{ color: "#111827" }}
-                    >
-                      {isStreaming ? "Excellent" : "Disconnected"}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div
-                      className="flex items-center gap-3"
-                      style={{ color: "#6b7280" }}
-                    >
-                      <RefreshCw size={20} style={{ color: "#6b7280" }} />
-                      <p className="text-sm">Motor Status</p>
-                    </div>
-                    <p
-                      className="text-sm font-medium"
-                      style={{ color: "#111827" }}
-                    >
-                      {isStreaming ? "Active" : "Idle"}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div
-                      className="flex items-center gap-3"
-                      style={{ color: "#6b7280" }}
-                    >
-                      <Bot size={20} style={{ color: "#6b7280" }} />
-                      <p className="text-sm">Current Mode</p>
-                    </div>
-                    <p
-                      className="text-sm font-medium"
-                      style={{ color: "#17563a" }}
-                    >
-                      Manual Control
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </main>
