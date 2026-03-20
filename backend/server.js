@@ -399,6 +399,84 @@ app.get("/api/camera/stream", async (req, res) => {
   }
 });
 
+// Autonomous mode (Flask: working_autonomous2 logic + MJPEG)
+app.post("/api/autonomous/start", async (req, res) => {
+  try {
+    const response = await axios.post(`${FLASK_URL}/api/autonomous/start`);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error starting autonomous mode:", error.message);
+    res.status(500).json({
+      status: "error",
+      message: error.message || "Failed to start autonomous mode",
+    });
+  }
+});
+
+app.post("/api/autonomous/stop", async (req, res) => {
+  try {
+    const response = await axios.post(`${FLASK_URL}/api/autonomous/stop`);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error stopping autonomous mode:", error.message);
+    res.status(500).json({
+      status: "error",
+      message: error.message || "Failed to stop autonomous mode",
+    });
+  }
+});
+
+app.get("/api/autonomous/status", async (req, res) => {
+  try {
+    const response = await axios.get(`${FLASK_URL}/api/autonomous/status`);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error getting autonomous status:", error.message);
+    res.status(500).json({
+      status: "error",
+      message: error.message || "Failed to get autonomous status",
+    });
+  }
+});
+
+app.get("/api/autonomous/stream", async (req, res) => {
+  try {
+    const response = await axios.get(`${FLASK_URL}/api/autonomous/stream`, {
+      responseType: "stream",
+      headers: {
+        Accept: "multipart/x-mixed-replace; boundary=frame",
+      },
+    });
+    res.setHeader("Content-Type", "multipart/x-mixed-replace; boundary=frame");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+    response.data.pipe(res);
+  } catch (error) {
+    console.error("Error streaming autonomous video:", error.message);
+    res.status(500).json({
+      status: "error",
+      message: error.message || "Failed to stream autonomous video",
+    });
+  }
+});
+
+app.get("/api/autonomous/snapshot", async (req, res) => {
+  try {
+    const response = await axios.get(`${FLASK_URL}/api/autonomous/snapshot`, {
+      responseType: "arraybuffer",
+    });
+    res.setHeader("Content-Type", "image/jpeg");
+    res.setHeader("Cache-Control", "no-cache");
+    res.send(Buffer.from(response.data));
+  } catch (error) {
+    console.error("Error getting autonomous snapshot:", error.message);
+    res.status(500).json({
+      status: "error",
+      message: error.message || "Failed to fetch autonomous snapshot",
+    });
+  }
+});
+
 app.get("/api/health", async (req, res) => {
   try {
     const response = await axios.get(`${FLASK_URL}/api/health`);
