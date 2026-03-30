@@ -1,213 +1,138 @@
-# Ecobot 🤖
+# Ecobot
 
-An intelligent robot control system for detecting and managing  using computer vision and real-time monitoring.
+Robot control + real-time trash detection with YOLO and a live MJPEG web UI.
 
-## 🌟 Features
+## Overview
+The project has two backend servers and a React frontend:
 
-- **Real-time Object Detection**: Uses YOLOv8 to detect trash in real-time via webcam
-- **Live Monitoring**: Stream video feed with object detection overlays
-- **Manual Control**: Direct robot control interface with directional controls
-- **Admin Dashboard**: Comprehensive monitoring and management interface
-- **User Authentication**: Secure login system with JWT tokens
-- **Modern UI**: Beautiful, responsive interface built with React and Tailwind CSS
+1. Frontend (React + Vite): control pages + live camera display.
+2. Node.js backend (Express, default port 3001): authentication + API proxy for robot control/streams.
+3. Flask backend (default port 5000): runs the vision + control loops and serves MJPEG streams.
 
-## 🏗️ Architecture
+The robot itself provides:
+- An HTTP MJPEG camera stream at `http://<ROBOT_IP>:8080?action=stream`
+- A JSON-RPC endpoint for control at `http://<ROBOT_IP>:9030/jsonrpc`
 
-The project consists of three main components:
+## Modes
 
-1. **Frontend** (React + Vite): Modern web interface for robot control and monitoring
-2. **Node.js Backend** (Express): API proxy and authentication server
-3. **Flask Backend**: Camera streaming and YOLO object detection service
+Manual:
+- `backend/flask_app.py` starts threads for camera capture, YOLO inference, sonar polling, and Xbox (pygame) control.
 
-## 📋 Prerequisites
+Autonomous:
+- `backend/autonomous_trash_collector.py` starts a worker thread that runs the same autonomous logic as `working_autonomous2.py`:
+  YOLO sizing + smoothing + pickup sequence.
 
-- **Node.js** (v18 or higher)
-- **Python** (v3.8 or higher)
-- **MySQL** database
-- **Webcam** connected to your system
+## Ports
 
-## 🚀 Getting Started
+- Frontend: `http://localhost:5173` (Vite default)
+- Node API: `http://localhost:3001`
+- Flask API: `http://localhost:5000`
 
-### 1. Clone the Repository
+## Configuration
 
-```bash
-git clone https://github.com/yourusername/Ecobot.git
-cd Ecobot
-```
+### Node environment (backend/.env, examples)
+Used by `backend/server.js`:
 
-### 2. Backend Setup
+- `PORT` (default: `3001`)
+- `FLASK_URL` (default: `http://localhost:5000`)
+- `JWT_SECRET` (default: `ecobot-secret-change-in-production`)
+- `FRONTEND_ORIGIN` (default: `http://localhost:5173`)
+- MySQL:
+  - `MYSQL_HOST` (default: `localhost`)
+  - `MYSQL_USER` (default: `root`)
+  - `MYSQL_PASSWORD` (default: empty)
+  - `MYSQL_DATABASE` (default: `ecobot`)
+- Email/OTP reset:
+  - `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`
+  - `EMAIL_USER`, `EMAIL_APP_PASSWORD`
 
-Navigate to the backend directory:
+### Frontend environment (frontend/.env)
+- `VITE_API_URL` (default: `http://localhost:3001`)
 
-```bash
-cd backend
-```
+### Autonomous robot IP override (optional)
+Used by `backend/autonomous_trash_collector.py`:
+- `ECOBOT_ROBOT_IP` (default: `172.20.10.8`)
 
-#### Install Python Dependencies
+Note: `backend/flask_app.py` currently hardcodes the robot IP to `172.20.10.8`.
 
-```bash
-pip install -r requirements.txt
-```
+## YOLO model
+- Flask manual control and autonomous both expect `best.pt` in the `backend/` directory (same as `flask_app.py` / imported module).
 
-#### Install Node.js Dependencies
+## Start the app
+You typically run three terminals:
 
-```bash
-npm install
-```
+1. Flask backend (vision + MJPEG + control loops):
+   ```bash
+   cd backend
+   python flask_app.py
+   ```
+2. Node backend (auth + proxy):
+   ```bash
+   cd backend
+   npm run dev
+   ```
+3. Frontend (UI):
+   ```bash
+   cd frontend
+   npm run dev
+   ```
 
-#### Configure Environment Variables
+## API endpoints
 
-Create a `.env` file in the `backend` directory:
+### Node.js API (Express, port 3001)
 
-```env
-PORT=3001
-FLASK_URL=http://localhost:5000
-JWT_SECRET=your-secret-key-here
-DB_HOST=localhost
-DB_USER=your-db-user
-DB_PASSWORD=your-db-password
-DB_NAME=ecobot
-```
+Auth + user management (protected by cookie JWT):
+- `POST /api/auth/login`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/verify-otp`
+- `POST /api/auth/reset-password`
+- `POST /api/auth/logout`
+- `GET /api/me`
+- `GET /api/users`
+- `POST /api/users`
+- `PATCH /api/users/:id`
 
-#### Download YOLO Weights
+Health (proxy):
+- `GET /api/health`
 
-The YOLO model weights should be placed in `backend/yolo_weights/yolov8n.pt`. The weights file is not included in the repository due to size constraints. You can download it from the [Ultralytics repository](https://github.com/ultralytics/ultralytics).
+Robot control + streams (proxy to Flask, no auth required):
+- Manual:
+  - `POST /api/control/start`  -> Flask `POST /api/control/start`
+  - `POST /api/control/stop`   -> Flask `POST /api/control/stop`
+  - `GET /api/camera/status`   -> Flask `GET /api/camera/status`
+  - `GET /api/status`         -> Flask `GET /api/status`
+  - `GET /api/camera/stream` -> Flask `GET /api/camera/stream` (MJPEG)
+- Autonomous:
+  - `POST /api/autonomous/start`  -> Flask `POST /api/autonomous/start`
+  - `POST /api/autonomous/stop`   -> Flask `POST /api/autonomous/stop`
+  - `GET /api/autonomous/status`  -> Flask `GET /api/autonomous/status`
+  - `GET /api/autonomous/stream`  -> Flask `GET /api/autonomous/stream` (MJPEG)
+  - `GET /api/autonomous/snapshot` -> Flask `GET /api/autonomous/snapshot` (JPEG)
 
-### 3. Frontend Setup
+### Flask API (Python, port 5000)
 
-Navigate to the frontend directory:
+- `GET /api/health`
+- `GET /api/status`
+  - returns: `sonar_cm`, `battery_voltage`, `battery_percent`, `action`, `trash_count`, `mode`, `control_active`
+- `GET /api/camera/status`
+  - returns: `status` (streaming/stopped) and `control_active`
 
-```bash
-cd ../frontend
-```
+Manual control:
+- `POST /api/control/start`  (starts camera + YOLO + sonar + Xbox loop; also stops autonomous)
+- `POST /api/control/stop`   (stops manual control loops)
+- `GET /api/camera/stream`  (MJPEG with overlays; requires manual control to be active)
 
-#### Install Dependencies
+Autonomous:
+- `POST /api/autonomous/start` (stops manual and starts autonomous worker)
+- `POST /api/autonomous/stop`  (stops autonomous worker)
+- `GET /api/autonomous/status` (returns `autonomous_active`)
+- `GET /api/autonomous/stream` (MJPEG annotated feed)
+- `GET /api/autonomous/snapshot` (single JPEG, debug endpoint)
 
-```bash
-npm install
-```
-
-#### Configure Environment Variables
-
-Create a `.env` file in the `frontend` directory:
-
-```env
-VITE_API_URL=http://localhost:3001
-```
-
-### 4. Start the Application
-
-You'll need to run three services:
-
-#### Terminal 1 - Start Flask API (Camera & Detection)
-
-```bash
-cd backend
-python flask_app.py
-```
-
-Or use the provided scripts:
-- Windows: `start_flask.bat`
-- Linux/Mac: `./start_flask.sh`
-
-#### Terminal 2 - Start Node.js API (Proxy & Auth)
-
-```bash
-cd backend
-npm run dev
-```
-
-#### Terminal 3 - Start Frontend Development Server
-
-```bash
-cd frontend
-npm run dev
-```
-
-The application will be available at `http://localhost:5173` (or the port shown in your terminal).
-
-## 📁 Project Structure
-
-```
-Ecobot/
-├── backend/
-│   ├── flask_app.py          # Flask API for camera and YOLO detection
-│   ├── server.js             # Node.js Express API server
-│   ├── requirements.txt      # Python dependencies
-│   ├── package.json          # Node.js dependencies
-│   ├── yolo_weights/         # YOLO model weights (not in repo)
-│   └── bottle_images/        # Detected bottle images (gitignored)
-├── frontend/
-│   ├── src/
-│   │   ├── components/       # Reusable React components
-│   │   ├── contexts/         # React contexts (Theme, etc.)
-│   │   └── pages/            # Page components
-│   ├── package.json
-│   └── vite.config.js
-└── README.md
-```
-
-## 🔌 API Endpoints
-
-### Node.js API (Port 3001)
-
-- `POST /api/camera/start` - Start camera stream
-- `POST /api/camera/stop` - Stop camera stream
-- `GET /api/camera/status` - Get camera status
-- `GET /api/camera/stream` - Video stream (MJPEG)
-- `GET /api/health` - Health check
-- `POST /api/auth/login` - User authentication
-- `POST /api/auth/register` - User registration
-
-### Flask API (Port 5000)
-
-- `POST /api/camera/start` - Start camera stream
-- `POST /api/camera/stop` - Stop camera stream
-- `GET /api/camera/status` - Get camera status
-- `GET /api/camera/stream` - Video stream (MJPEG)
-- `GET /api/health` - Health check
-
-## 🛠️ Technologies Used
-
-### Frontend
-- **React 19** - UI library
-- **Vite** - Build tool and dev server
-- **Tailwind CSS** - Utility-first CSS framework
-- **React Router** - Client-side routing
-- **Lucide React** - Icon library
-
-### Backend
-- **Flask** - Python web framework
-- **Express.js** - Node.js web framework
-- **YOLOv8 (Ultralytics)** - Object detection model
-- **OpenCV** - Computer vision library
-- **MySQL** - Database
-- **JWT** - Authentication tokens
-- **Socket.io** (if used) - Real-time communication
-
-## 📝 Notes
-
-- The Flask API uses YOLO to detect plastic bottles (class 39 in COCO dataset)
-- Camera will automatically try indices 0-4 to find an available webcam
-- Video stream is in MJPEG format for browser compatibility
-- Make sure your webcam is connected and accessible before starting the application
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 👥 Authors
-
-- NABASA ISAAC
-- LETICIA LAKICA
-- ATWIJUKIRE APOPHIA
-
-## 🙏 Acknowledgments
-
-- [Ultralytics](https://ultralytics.com/) for YOLOv8
-- [OpenCV](https://opencv.org/) for computer vision capabilities
+## Communication flow (frontend -> Node -> Flask -> robot)
+- Frontend calls Node endpoints on port 3001.
+- Node proxies robot/stream endpoints to Flask on port 5000 via HTTP (axios).
+- Flask reads the robot camera MJPEG via OpenCV (`cv2.VideoCapture(STREAM_URL)`).
+- Flask runs YOLO (Ultralytics) on the latest frame and draws overlays.
+- Flask sends robot motion/arm commands via JSON-RPC (`SetChassisVelocity`, `SetPWMServo`) and reads sonar via `GetSonarDistance`.
 

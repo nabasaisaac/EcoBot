@@ -12,6 +12,8 @@ from queue import Queue
 from flask import Flask, Response, jsonify
 from flask_cors import CORS
 
+import autonomous_trash_collector as autonomous_tc
+
 def get_pygame():
     import pygame as pg
     return pg
@@ -557,6 +559,8 @@ def camera_status():
 def start_control():
     global control_running, camera_thread_handle, yolo_thread_handle, sonar_thread_handle, gamepad_thread_handle
     global latest_frame, last_move, last_rotation, servo_positions, arm_prev, gripper_open_state
+    autonomous_tc.stop_autonomous()
+    time.sleep(0.6)
     with control_lock:
         if control_running:
             return jsonify({"status": "already_started", "message": "Manual control already running"}), 200
@@ -604,6 +608,79 @@ def video_stream():
             "Access-Control-Allow-Origin": "*",
         },
     )
+
+
+# ----- Autonomous (working_autonomous2.py logic via autonomous_trash_collector) -----
+@app.route("/api/autonomous/start", methods=["POST"])
+def autonomous_start():
+    global control_running
+    with control_lock:
+        if control_running:
+            control_running = False
+    time.sleep(0.6)
+    ok, msg = autonomous_tc.start_autonomous()
+    if not ok:
+        return jsonify({"status": "already_started", "message": msg}), 200
+    return jsonify({"status": "success", "message": "Autonomous trash collection started."}), 200
+
+
+@app.route("/api/autonomous/stop", methods=["POST"])
+def autonomous_stop():
+    autonomous_tc.stop_autonomous()
+    return jsonify({"status": "success", "message": "Autonomous mode stopping."}), 200
+
+
+@app.route("/api/autonomous/status", methods=["GET"])
+def autonomous_status():
+    return jsonify({
+        "autonomous_active": autonomous_tc.is_autonomous_running(),
+    }), 200
+
+
+@app.route("/api/autonomous/stream")
+def autonomous_video_stream():
+    return Response(
+        autonomous_tc.generate_autonomous_frames(),
+        mimetype="multipart/x-mixed-replace; boundary=frame",
+        headers={
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+            "X-Accel-Buffering": "no",
+            "Connection": "keep-alive",
+            "Access-Control-Allow-Origin": "*",
+        },
+    )
+
+
+@app.route("/api/autonomous/snapshot")
+def autonomous_snapshot():
+    """
+    Single JPEG snapshot of the latest annotated frame.
+    Useful to debug MJPEG issues vs "robot frame never updates".
+    """
+    # Import inside handler to avoid circular imports if you refactor later.
+    import cv2
+    import numpy as np
+
+    # If worker isn't running, still return a placeholder image.
+    with autonomous_tc.display_frame_lock:
+        frame = autonomous_tc.latest_display_frame
+        if frame is None:
+            frame = autonomous_tc._placeholder_bgr("Waiting for autonomous frames…")
+
+    try:
+        ret, buffer = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+        if not ret:
+            # Return a valid JPEG even if encoding fails.
+            placeholder = np.zeros((autonomous_tc.DISPLAY_H, autonomous_tc.DISPLAY_W, 3), dtype=np.uint8)
+            ret2, buffer2 = cv2.imencode(".jpg", placeholder, [cv2.IMWRITE_JPEG_QUALITY, 85])
+            if not ret2:
+                return Response(status=500)
+            return Response(buffer2.tobytes(), mimetype="image/jpeg")
+        return Response(buffer.tobytes(), mimetype="image/jpeg")
+    except Exception:
+        return Response(status=500)
 
 if __name__ == "__main__":
     print("Starting Ecobot backend (manual control + stream)...")
